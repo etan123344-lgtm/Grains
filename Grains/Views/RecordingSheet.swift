@@ -80,7 +80,7 @@ struct RecordingSheet: View {
                 }
             } label: {
                 Circle()
-                    .fill(recorder.isRecording ? .red : .white)
+                    .fill(.red)
                     .frame(width: 72, height: 72)
                     .overlay {
                         if recorder.isRecording {
@@ -90,7 +90,7 @@ struct RecordingSheet: View {
                         }
                     }
                     .overlay {
-                        Circle().stroke(.white.opacity(0.3), lineWidth: 3)
+                        Circle().stroke(.white.opacity(0.5), lineWidth: 3)
                     }
             }
             .padding(.bottom, 40)

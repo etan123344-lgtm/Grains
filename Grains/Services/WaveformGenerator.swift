@@ -21,7 +21,7 @@ struct WaveformGenerator {
             guard count > 0 else { break }
 
             var rms: Float = 0
-            var slice = UnsafeBufferPointer(start: channelData + start, count: count)
+            let slice = UnsafeBufferPointer(start: channelData + start, count: count)
             vDSP_rmsqv(slice.baseAddress!, 1, &rms, vDSP_Length(count))
             result[i] = rms
         }
