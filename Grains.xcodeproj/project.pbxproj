@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		180ACB1B2F50FD4C00B9E571 /* WaveformScrubber in Frameworks */ = {isa = PBXBuildFile; productRef = 180ACB1C2F50FD4C00B9E571 /* WaveformScrubber */; };
 		18D4C0DA2F4E4E1E00D08E78 /* GrainsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D4C0D92F4E4E1E00D08E78 /* GrainsApp.swift */; };
 		18D4C0E02F4E4E1F00D08E78 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18D4C0DF2F4E4E1F00D08E78 /* Assets.xcassets */; };
 		18D4C0E32F4E4E1F00D08E78 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18D4C0E22F4E4E1F00D08E78 /* Preview Assets.xcassets */; };
@@ -16,7 +17,6 @@
 		BB0001012F4F000100D08E78 /* Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001012F4F000100D08E78 /* Sample.swift */; };
 		BB0001022F4F000100D08E78 /* AudioEngineService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001022F4F000100D08E78 /* AudioEngineService.swift */; };
 		BB0001032F4F000100D08E78 /* AudioRecorderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001032F4F000100D08E78 /* AudioRecorderService.swift */; };
-		BB0001042F4F000100D08E78 /* WaveformGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001042F4F000100D08E78 /* WaveformGenerator.swift */; };
 		BB0001052F4F000100D08E78 /* FileManagerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001052F4F000100D08E78 /* FileManagerService.swift */; };
 		BB0001062F4F000100D08E78 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001062F4F000100D08E78 /* HomeView.swift */; };
 		BB0001072F4F000100D08E78 /* SamplePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001072F4F000100D08E78 /* SamplePlayerView.swift */; };
@@ -54,7 +54,6 @@
 		AA0001012F4F000100D08E78 /* Sample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sample.swift; sourceTree = "<group>"; };
 		AA0001022F4F000100D08E78 /* AudioEngineService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineService.swift; sourceTree = "<group>"; };
 		AA0001032F4F000100D08E78 /* AudioRecorderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderService.swift; sourceTree = "<group>"; };
-		AA0001042F4F000100D08E78 /* WaveformGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformGenerator.swift; sourceTree = "<group>"; };
 		AA0001052F4F000100D08E78 /* FileManagerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerService.swift; sourceTree = "<group>"; };
 		AA0001062F4F000100D08E78 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		AA0001072F4F000100D08E78 /* SamplePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplePlayerView.swift; sourceTree = "<group>"; };
@@ -67,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				180ACB1B2F50FD4C00B9E571 /* WaveformScrubber in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,7 +159,6 @@
 				AA0001022F4F000100D08E78 /* AudioEngineService.swift */,
 				AA0001032F4F000100D08E78 /* AudioRecorderService.swift */,
 				AA0001052F4F000100D08E78 /* FileManagerService.swift */,
-				AA0001042F4F000100D08E78 /* WaveformGenerator.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -191,6 +190,9 @@
 			dependencies = (
 			);
 			name = Grains;
+			packageProductDependencies = (
+				180ACB1C2F50FD4C00B9E571 /* WaveformScrubber */,
+			);
 			productName = Grains;
 			productReference = 18D4C0D62F4E4E1E00D08E78 /* Grains.app */;
 			productType = "com.apple.product-type.application";
@@ -263,6 +265,9 @@
 				Base,
 			);
 			mainGroup = 18D4C0CD2F4E4E1E00D08E78;
+			packageReferences = (
+				180ACB1A2F50FD4C00B9E571 /* XCRemoteSwiftPackageReference "WaveformScrubber" */,
+			);
 			productRefGroup = 18D4C0D72F4E4E1E00D08E78 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -309,7 +314,6 @@
 				BB0001012F4F000100D08E78 /* Sample.swift in Sources */,
 				BB0001022F4F000100D08E78 /* AudioEngineService.swift in Sources */,
 				BB0001032F4F000100D08E78 /* AudioRecorderService.swift in Sources */,
-				BB0001042F4F000100D08E78 /* WaveformGenerator.swift in Sources */,
 				BB0001052F4F000100D08E78 /* FileManagerService.swift in Sources */,
 				BB0001062F4F000100D08E78 /* HomeView.swift in Sources */,
 				BB0001072F4F000100D08E78 /* SamplePlayerView.swift in Sources */,
@@ -642,6 +646,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		180ACB1A2F50FD4C00B9E571 /* XCRemoteSwiftPackageReference "WaveformScrubber" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/lkora/WaveformScrubber.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		180ACB1C2F50FD4C00B9E571 /* WaveformScrubber */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 180ACB1A2F50FD4C00B9E571 /* XCRemoteSwiftPackageReference "WaveformScrubber" */;
+			productName = WaveformScrubber;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 18D4C0CE2F4E4E1E00D08E78 /* Project object */;
 }

@@ -1,39 +1,45 @@
 import SwiftUI
+import WaveformScrubber
 
 struct WaveformEditorView: View {
-    let waveformData: [Float]
+    let audioURL: URL
     @Binding var loopStart: Double
     @Binding var loopEnd: Double
     let duration: Double
 
+    @State private var progress: CGFloat = 0
+
     private let handleWidth: CGFloat = 12
-    private let waveformColor = Color.white
-    private let activeColor = Color.white.opacity(0.9)
-    private let dimmedColor = Color.white.opacity(0.15)
     private let loopStartColor = Color.green
     private let loopEndColor = Color.red
 
     var body: some View {
         GeometryReader { geometry in
             let width = geometry.size.width
-            let height = geometry.size.height
 
             ZStack(alignment: .leading) {
-                // Waveform
-                Canvas { context, size in
-                    drawWaveform(context: context, size: size)
-                }
+                WaveformScrubber(
+                    config: ScrubberConfig(
+                        activeTint: Color.white.opacity(0.9),
+                        inactiveTint: Color.white.opacity(0.3)
+                    ),
+                    drawer: BarDrawer(config: .init(barWidth: 2, spacing: 2, cornerRadius: 1)),
+                    url: audioURL,
+                    progress: $progress
+                )
 
                 // Dimmed overlay — before loop start
                 Rectangle()
                     .fill(Color.black.opacity(0.5))
                     .frame(width: xPosition(for: loopStart, in: width))
+                    .allowsHitTesting(false)
 
                 // Dimmed overlay — after loop end
                 Rectangle()
                     .fill(Color.black.opacity(0.5))
                     .frame(width: width - xPosition(for: loopEnd, in: width))
                     .offset(x: xPosition(for: loopEnd, in: width))
+                    .allowsHitTesting(false)
 
                 // Loop start handle
                 handleView(color: loopStartColor)
@@ -60,30 +66,6 @@ struct WaveformEditorView: View {
             .clipped()
         }
         .frame(height: 150)
-    }
-
-    private func drawWaveform(context: GraphicsContext, size: CGSize) {
-        guard !waveformData.isEmpty else { return }
-
-        let midY = size.height / 2
-        let barWidth = size.width / CGFloat(waveformData.count)
-
-        for (index, sample) in waveformData.enumerated() {
-            let x = CGFloat(index) * barWidth
-            let barHeight = CGFloat(sample) * midY
-
-            let time = (Double(index) / Double(waveformData.count)) * duration
-            let isInLoop = time >= loopStart && time <= loopEnd
-            let color = isInLoop ? activeColor : dimmedColor
-
-            let rect = CGRect(
-                x: x,
-                y: midY - barHeight,
-                width: max(barWidth - 0.5, 0.5),
-                height: barHeight * 2
-            )
-            context.fill(Path(rect), with: .color(color))
-        }
     }
 
     private func handleView(color: Color) -> some View {

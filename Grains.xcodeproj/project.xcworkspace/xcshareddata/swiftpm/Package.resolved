@@ -1,0 +1,15 @@
+{
+  "originHash" : "99593829b4dc90f5b7c755bf5003323d9e979ec7ae0df050a4b541d9e45bf865",
+  "pins" : [
+    {
+      "identity" : "waveformscrubber",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/lkora/WaveformScrubber.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "8eedca505a58675dbbfa1082aa9d5f073cf25a34"
+      }
+    }
+  ],
+  "version" : 3
+}
