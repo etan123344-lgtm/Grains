@@ -5,7 +5,7 @@ import Observation
 final class AudioEngineService {
     private let engine = AVAudioEngine()
     private let playerNode = AVAudioPlayerNode()
-    private let timePitch = AVAudioUnitTimePitch()
+    private let varispeed = AVAudioUnitVarispeed()
 
     private var fullBuffer: AVAudioPCMBuffer?
     private var audioFormat: AVAudioFormat?
@@ -15,7 +15,7 @@ final class AudioEngineService {
 
     init() {
         engine.attach(playerNode)
-        engine.attach(timePitch)
+        engine.attach(varispeed)
     }
 
     func loadFile(url: URL) throws {
@@ -32,9 +32,9 @@ final class AudioEngineService {
         
          // Reconnect nodes with the loaded file's format to avoid format mismatch crashes
          engine.disconnectNodeOutput(playerNode)
-         engine.disconnectNodeOutput(timePitch)
-         engine.connect(playerNode, to: timePitch, format: format)
-         engine.connect(timePitch, to: engine.mainMixerNode, format: format)
+         engine.disconnectNodeOutput(varispeed)
+         engine.connect(playerNode, to: varispeed, format: format)
+         engine.connect(varispeed, to: engine.mainMixerNode, format: format)
 
         fullBuffer = buffer
         audioFormat = format
@@ -73,7 +73,7 @@ final class AudioEngineService {
             }
         }
 
-        timePitch.pitch = pitchSemitones * 100
+        varispeed.rate = pow(2.0, pitchSemitones / 12.0)
 
         playerNode.stop()
 
@@ -95,7 +95,7 @@ final class AudioEngineService {
     }
 
     func setPitch(_ semitones: Float) {
-        timePitch.pitch = semitones * 100
+        varispeed.rate = pow(2.0, semitones / 12.0)
     }
 
     func getFullBuffer() -> AVAudioPCMBuffer? {
