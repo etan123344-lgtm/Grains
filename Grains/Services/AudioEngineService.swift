@@ -16,8 +16,6 @@ final class AudioEngineService {
     init() {
         engine.attach(playerNode)
         engine.attach(timePitch)
-        engine.connect(playerNode, to: timePitch, format: nil)
-        engine.connect(timePitch, to: engine.mainMixerNode, format: nil)
     }
 
     func loadFile(url: URL) throws {
@@ -31,6 +29,12 @@ final class AudioEngineService {
             throw AudioEngineError.bufferCreationFailed
         }
         try audioFile.read(into: buffer)
+        
+         // Reconnect nodes with the loaded file's format to avoid format mismatch crashes
+         engine.disconnectNodeOutput(playerNode)
+         engine.disconnectNodeOutput(timePitch)
+         engine.connect(playerNode, to: timePitch, format: format)
+         engine.connect(timePitch, to: engine.mainMixerNode, format: format)
 
         fullBuffer = buffer
         audioFormat = format
