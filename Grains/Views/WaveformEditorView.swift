@@ -8,70 +8,75 @@ struct WaveformEditorView: View {
     let duration: Double
 
     @State private var progress: CGFloat = 0
+    @State private var viewWidth: CGFloat = 0
 
     private let handleWidth: CGFloat = 12
     private let loopStartColor = Color.green
     private let loopEndColor = Color.red
+    private let waveformHeight: CGFloat = 150
 
     var body: some View {
-        GeometryReader { geometry in
-            let width = geometry.size.width
-
-            ZStack(alignment: .leading) {
-                WaveformScrubber(
-                    config: ScrubberConfig(
-                        activeTint: Color.white.opacity(0.9),
-                        inactiveTint: Color.white.opacity(0.3)
-                    ),
-                    drawer: BarDrawer(config: .init(barWidth: 2, spacing: 2, cornerRadius: 1)),
-                    url: audioURL,
-                    progress: $progress
-                )
-
-                // Dimmed overlay — before loop start
-                Rectangle()
-                    .fill(Color.black.opacity(0.5))
-                    .frame(width: xPosition(for: loopStart, in: width))
-                    .allowsHitTesting(false)
-
-                // Dimmed overlay — after loop end
-                Rectangle()
-                    .fill(Color.black.opacity(0.5))
-                    .frame(width: width - xPosition(for: loopEnd, in: width))
-                    .offset(x: xPosition(for: loopEnd, in: width))
-                    .allowsHitTesting(false)
-
-                // Loop start handle
-                handleView(color: loopStartColor)
-                    .offset(x: xPosition(for: loopStart, in: width) - handleWidth / 2)
-                    .gesture(
-                        DragGesture()
-                            .onChanged { value in
-                                let newTime = timeFromX(value.location.x, in: width)
-                                loopStart = max(0, min(newTime, loopEnd - 0.01))
-                            }
-                    )
-
-                // Loop end handle
-                handleView(color: loopEndColor)
-                    .offset(x: xPosition(for: loopEnd, in: width) - handleWidth / 2)
-                    .gesture(
-                        DragGesture()
-                            .onChanged { value in
-                                let newTime = timeFromX(value.location.x, in: width)
-                                loopEnd = min(duration, max(newTime, loopStart + 0.01))
-                            }
-                    )
-            }
-            .clipped()
+        WaveformScrubber(
+            config: ScrubberConfig(
+                activeTint: Color.white.opacity(0.9),
+                inactiveTint: Color.white.opacity(0.3)
+            ),
+            drawer: BarDrawer(config: .init(barWidth: 2, spacing: 2, cornerRadius: 1)),
+            url: audioURL,
+            progress: $progress
+        )
+        .frame(height: waveformHeight)
+        .overlay(alignment: .leading) {
+            // Dimmed overlay — before loop start
+            Rectangle()
+                .fill(Color.black.opacity(0.5))
+                .frame(width: xPosition(for: loopStart, in: viewWidth))
+                .allowsHitTesting(false)
         }
-        .frame(height: 150)
+        .overlay(alignment: .leading) {
+            // Dimmed overlay — after loop end
+            Rectangle()
+                .fill(Color.black.opacity(0.5))
+                .frame(width: viewWidth - xPosition(for: loopEnd, in: viewWidth))
+                .offset(x: xPosition(for: loopEnd, in: viewWidth))
+                .allowsHitTesting(false)
+        }
+        .overlay(alignment: .leading) {
+            // Loop start handle
+            handleView(color: loopStartColor)
+                .offset(x: xPosition(for: loopStart, in: viewWidth) - handleWidth / 2)
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            let newTime = timeFromX(value.location.x, in: viewWidth)
+                            loopStart = max(0, min(newTime, loopEnd - 0.01))
+                        }
+                )
+        }
+        .overlay(alignment: .leading) {
+            // Loop end handle
+            handleView(color: loopEndColor)
+                .offset(x: xPosition(for: loopEnd, in: viewWidth) - handleWidth / 2)
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            let newTime = timeFromX(value.location.x, in: viewWidth)
+                            loopEnd = min(duration, max(newTime, loopStart + 0.01))
+                        }
+                )
+        }
+        .clipped()
+        .onGeometryChange(for: CGFloat.self) { proxy in
+            proxy.size.width
+        } action: { newWidth in
+            viewWidth = newWidth
+        }
     }
 
     private func handleView(color: Color) -> some View {
         RoundedRectangle(cornerRadius: 3)
             .fill(color)
-            .frame(width: handleWidth, height: 150)
+            .frame(width: handleWidth, height: waveformHeight)
             .shadow(radius: 2)
     }
 
