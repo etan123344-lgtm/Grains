@@ -1,18 +1,12 @@
-//
-//  GrainsApp.swift
-//  Grains
-//
-//  Created by Ethan Zhou on 2/24/26.
-//
-
 import SwiftUI
 import SwiftData
+import AVFoundation
 
 @main
 struct GrainsApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Sample.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -23,10 +17,24 @@ struct GrainsApp: App {
         }
     }()
 
+    init() {
+        configureAudioSession()
+    }
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeView()
         }
         .modelContainer(sharedModelContainer)
+    }
+
+    private func configureAudioSession() {
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playback)
+            try session.setActive(true)
+        } catch {
+            print("Failed to configure audio session: \(error)")
+        }
     }
 }
