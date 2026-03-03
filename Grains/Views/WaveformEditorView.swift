@@ -11,8 +11,8 @@ struct WaveformEditorView: View {
     @State private var viewWidth: CGFloat = 0
 
     private let handleWidth: CGFloat = 12
-    private let loopStartColor = Color.green
-    private let loopEndColor = Color.red
+    private let loopStartColor = Color.black
+    private let loopEndColor = Color.black
     private let waveformHeight: CGFloat = 150
     private let barWidth: CGFloat = 2
     private let spacing: CGFloat = 2
@@ -100,6 +100,9 @@ struct WaveformEditorView: View {
             .fill(color)
             .frame(width: handleWidth, height: waveformHeight)
             .shadow(radius: 2)
+            .padding(.horizontal, 16)
+            .contentShape(Rectangle())
+            .padding(.horizontal, -16)
     }
 
     private func xPosition(for time: Double, in width: CGFloat) -> CGFloat {

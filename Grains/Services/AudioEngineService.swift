@@ -73,6 +73,19 @@ final class AudioEngineService {
             }
         }
 
+        // Apply fade in/out to eliminate loop click (10ms)
+        let fadeSamples = min(Int(sampleRate * 0.01), Int(loopFrameCount) / 2)
+        if fadeSamples > 0 {
+            for ch in 0..<channelCount {
+                guard let samples = loopBuffer.floatChannelData?[ch] else { continue }
+                for i in 0..<fadeSamples {
+                    let gain = Float(i) / Float(fadeSamples)
+                    samples[i] *= gain
+                    samples[Int(loopFrameCount) - 1 - i] *= gain
+                }
+            }
+        }
+
         varispeed.rate = pow(2.0, pitchSemitones / 12.0)
 
         playerNode.stop()

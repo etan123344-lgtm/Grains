@@ -24,11 +24,11 @@ struct SamplePlayerView: View {
             HStack {
                 Text(formatTime(sample.loopStart))
                     .font(.caption)
-                    .foregroundStyle(.green)
+                    .foregroundStyle(.black)
                 Spacer()
                 Text(formatTime(sample.loopEnd))
                     .font(.caption)
-                    .foregroundStyle(.red)
+                    .foregroundStyle(.black)
             }
             .padding(.horizontal)
             .padding(.top, 4)
