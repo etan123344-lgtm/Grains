@@ -4,6 +4,7 @@ import SwiftData
 struct SamplePlayerView: View {
     @Bindable var sample: Sample
     @State private var audioEngine = AudioEngineService()
+    @State private var waveformSamples: [Float] = []
     @State private var errorMessage: String?
     @State private var showingError = false
 
@@ -11,7 +12,7 @@ struct SamplePlayerView: View {
         VStack(spacing: 0) {
             // Waveform editor
             WaveformEditorView(
-                audioURL: sample.fileURL,
+                waveformSamples: waveformSamples,
                 loopStart: $sample.loopStart,
                 loopEnd: $sample.loopEnd,
                 duration: sample.duration
@@ -122,6 +123,9 @@ struct SamplePlayerView: View {
     private func loadAudio() {
         do {
             try audioEngine.loadFile(url: sample.fileURL)
+            if let buffer = audioEngine.getFullBuffer() {
+                waveformSamples = WaveformGenerator.generateWaveform(from: buffer, targetSampleCount: 200)
+            }
         } catch {
             errorMessage = error.localizedDescription
             showingError = true

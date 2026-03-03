@@ -1,46 +1,68 @@
 import SwiftUI
-import WaveformScrubber
 
 struct WaveformEditorView: View {
-    let audioURL: URL
+    @Environment(\.colorScheme) private var colorScheme
+
+    let waveformSamples: [Float]
     @Binding var loopStart: Double
     @Binding var loopEnd: Double
     let duration: Double
 
-    @State private var progress: CGFloat = 0
     @State private var viewWidth: CGFloat = 0
 
     private let handleWidth: CGFloat = 12
     private let loopStartColor = Color.green
     private let loopEndColor = Color.red
     private let waveformHeight: CGFloat = 150
+    private let barWidth: CGFloat = 2
+    private let spacing: CGFloat = 2
+
+    // DEBUG toggles for quick diagnosis
+    private let DEBUG_forceFullOpacityBars = false      // Set true to force all bars to full white
+    private let DEBUG_useDynamicStepToFitWidth = false // Set true to scale bars to fit available width
+    private let DEBUG_normalizeSamples = true          // Set true to use |sample| clamped to [0,1]
 
     var body: some View {
-        WaveformScrubber(
-            config: ScrubberConfig(
-                activeTint: Color.white.opacity(0.9),
-                inactiveTint: Color.white.opacity(0.3)
-            ),
-            drawer: BarDrawer(config: .init(barWidth: 2, spacing: 2, cornerRadius: 1)),
-            url: audioURL,
-            progress: $progress
-        )
+        Canvas { context, size in
+            // Choose step: either fixed barWidth+spacing, or dynamic to fit width
+            let step: CGFloat = DEBUG_useDynamicStepToFitWidth
+                ? max(1, size.width / CGFloat(max(1, waveformSamples.count)))
+                : (barWidth + spacing)
+
+            // Choose base waveform color based on color scheme (black on light backgrounds, white on dark)
+            let barBaseColor: Color = (colorScheme == .light) ? .black : .white
+
+            // DEBUG: Log geometry and counts once per draw
+            #if DEBUG
+            print("Waveform samples: \(waveformSamples.count), step: \(step), estimated total width: \(CGFloat(waveformSamples.count) * step), canvas width: \(size.width)")
+            #endif
+
+            let midY = size.height / 2
+            let loopStartX = xPosition(for: loopStart, in: size.width)
+            let loopEndX = xPosition(for: loopEnd, in: size.width)
+
+            for (i, sample) in waveformSamples.enumerated() {
+                let x = CGFloat(i) * step
+                let amplitude: CGFloat = {
+                    if DEBUG_normalizeSamples {
+                        return max(0, min(1, abs(CGFloat(sample))))
+                    } else {
+                        return CGFloat(sample)
+                    }
+                }()
+                let barHeight = max(1, amplitude * size.height)
+                let currentBarWidth: CGFloat = DEBUG_useDynamicStepToFitWidth ? max(1, step - 1) : barWidth
+                let rect = CGRect(x: x, y: midY - barHeight / 2, width: currentBarWidth, height: barHeight)
+                let path = RoundedRectangle(cornerRadius: 1).path(in: rect)
+
+                let isInLoop = x >= loopStartX && x <= loopEndX
+                let color: Color = DEBUG_forceFullOpacityBars
+                    ? barBaseColor
+                    : (isInLoop ? barBaseColor.opacity(0.9) : barBaseColor.opacity(0.3))
+                context.fill(path, with: .color(color))
+            }
+        }
         .frame(height: waveformHeight)
-        .overlay(alignment: .leading) {
-            // Dimmed overlay — before loop start
-            Rectangle()
-                .fill(Color.black.opacity(0.5))
-                .frame(width: xPosition(for: loopStart, in: viewWidth))
-                .allowsHitTesting(false)
-        }
-        .overlay(alignment: .leading) {
-            // Dimmed overlay — after loop end
-            Rectangle()
-                .fill(Color.black.opacity(0.5))
-                .frame(width: viewWidth - xPosition(for: loopEnd, in: viewWidth))
-                .offset(x: xPosition(for: loopEnd, in: viewWidth))
-                .allowsHitTesting(false)
-        }
         .overlay(alignment: .leading) {
             // Loop start handle
             handleView(color: loopStartColor)
@@ -90,3 +112,4 @@ struct WaveformEditorView: View {
         return Double(x / width) * duration
     }
 }
+
