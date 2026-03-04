@@ -4,7 +4,6 @@ import Observation
 @Observable
 final class AudioEngineService {
     private let engine = AVAudioEngine()
-    private let playerNode = AVAudioPlayerNode()
     private let varispeed = AVAudioUnitVarispeed()
 
     private var sourceNode: AVAudioSourceNode?
@@ -15,33 +14,21 @@ final class AudioEngineService {
 
     private(set) var isPlaying = false
     private(set) var currentFile: URL?
-    private(set) var isGranularMode = false
 
     init() {
-        engine.attach(playerNode)
         engine.attach(varispeed)
     }
 
     // MARK: - Graph Wiring
 
-    private func disconnectAllCustomNodes() {
-        engine.disconnectNodeOutput(playerNode)
+    private func connectGranularPath(format: AVAudioFormat) {
+        // Disconnect and detach old source node if present
         if let src = sourceNode {
             engine.disconnectNodeOutput(src)
             engine.detach(src)
             sourceNode = nil
         }
         engine.disconnectNodeOutput(varispeed)
-    }
-
-    private func connectNormalPath(format: AVAudioFormat) {
-        disconnectAllCustomNodes()
-        engine.connect(playerNode, to: varispeed, format: format)
-        engine.connect(varispeed, to: engine.mainMixerNode, format: format)
-    }
-
-    private func connectGranularPath(format: AVAudioFormat) {
-        disconnectAllCustomNodes()
 
         let ge = grainEngine
         let node = AVAudioSourceNode(format: format) { _, _, frameCount, audioBufferList -> OSStatus in
@@ -52,8 +39,6 @@ final class AudioEngineService {
                 : outL
 
             _ = ge.render(outputL: outL, outputR: outR, frameCount: Int(frameCount))
-
-            // If mono output, copy L to R is already handled in render
             return noErr
         }
 
@@ -93,101 +78,14 @@ final class AudioEngineService {
             )
         }
 
-        // Connect appropriate path
-        if isGranularMode {
-            connectGranularPath(format: format)
-        } else {
-            connectNormalPath(format: format)
-        }
+        connectGranularPath(format: format)
 
         if !engine.isRunning {
             try engine.start()
         }
     }
 
-    // MARK: - Mode Switching
-
-    func setGranularMode(_ enabled: Bool) {
-        guard enabled != isGranularMode else { return }
-        let wasPlaying = isPlaying
-        stop()
-        isGranularMode = enabled
-
-        if let format = audioFormat {
-            if enabled {
-                connectGranularPath(format: format)
-            } else {
-                connectNormalPath(format: format)
-            }
-            if !engine.isRunning {
-                try? engine.start()
-            }
-        }
-
-        _ = wasPlaying // caller handles restart
-    }
-
-    // MARK: - Normal Playback
-
-    func play(loopStart: Double, loopEnd: Double, isReversed: Bool, pitchSemitones: Float) {
-        guard let fullBuffer, let audioFormat else { return }
-
-        let sampleRate = audioFormat.sampleRate
-        let startFrame = AVAudioFramePosition(loopStart * sampleRate)
-        let endFrame = AVAudioFramePosition(loopEnd * sampleRate)
-        let totalFrames = AVAudioFrameCount(fullBuffer.frameLength)
-
-        let clampedStart = max(0, min(startFrame, AVAudioFramePosition(totalFrames)))
-        let clampedEnd = max(clampedStart, min(endFrame, AVAudioFramePosition(totalFrames)))
-        let loopFrameCount = AVAudioFrameCount(clampedEnd - clampedStart)
-
-        guard loopFrameCount > 0 else { return }
-
-        guard let loopBuffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: loopFrameCount) else { return }
-        loopBuffer.frameLength = loopFrameCount
-
-        let channelCount = Int(audioFormat.channelCount)
-        for ch in 0..<channelCount {
-            guard let src = fullBuffer.floatChannelData?[ch],
-                  let dst = loopBuffer.floatChannelData?[ch] else { continue }
-            if isReversed {
-                for i in 0..<Int(loopFrameCount) {
-                    dst[i] = src[Int(clampedStart) + Int(loopFrameCount) - 1 - i]
-                }
-            } else {
-                for i in 0..<Int(loopFrameCount) {
-                    dst[i] = src[Int(clampedStart) + i]
-                }
-            }
-        }
-
-        // Apply fade in/out to eliminate loop click (10ms)
-        let fadeSamples = min(Int(sampleRate * 0.01), Int(loopFrameCount) / 2)
-        if fadeSamples > 0 {
-            for ch in 0..<channelCount {
-                guard let samples = loopBuffer.floatChannelData?[ch] else { continue }
-                for i in 0..<fadeSamples {
-                    let gain = Float(i) / Float(fadeSamples)
-                    samples[i] *= gain
-                    samples[Int(loopFrameCount) - 1 - i] *= gain
-                }
-            }
-        }
-
-        varispeed.rate = pow(2.0, pitchSemitones / 12.0)
-
-        playerNode.stop()
-
-        if !engine.isRunning {
-            try? engine.start()
-        }
-
-        playerNode.scheduleBuffer(loopBuffer, at: nil, options: .loops)
-        playerNode.play()
-        isPlaying = true
-    }
-
-    // MARK: - Granular Playback
+    // MARK: - Playback
 
     func playGranular(loopStart: Double, loopEnd: Double, pitchSemitones: Float) {
         guard let audioFormat else { return }
@@ -211,25 +109,13 @@ final class AudioEngineService {
         isPlaying = true
     }
 
-    func stopGranular() {
+    func stop() {
         grainEngine.noteOff()
         isPlaying = false
     }
 
-    // MARK: - Stop / Shutdown
-
-    func stop() {
-        if isGranularMode {
-            stopGranular()
-        } else {
-            playerNode.stop()
-            isPlaying = false
-        }
-    }
-
     func shutdown() {
         grainEngine.noteOff()
-        playerNode.stop()
         if let src = sourceNode {
             engine.detach(src)
             sourceNode = nil

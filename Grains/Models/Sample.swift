@@ -7,13 +7,11 @@ final class Sample {
     var fileName: String
     var loopStart: Double
     var loopEnd: Double
-    var isReversed: Bool
     var pitchSemitones: Float
     var duration: Double
     var createdAt: Date
 
     // Granular synthesis properties
-    var isGranularMode: Bool = false
     var grainRate: Float = 10.0
     var grainDuration: Float = 0.1
     var shiftSpeed: Float = 1.0
@@ -37,7 +35,6 @@ final class Sample {
         self.fileName = fileName
         self.loopStart = 0
         self.loopEnd = duration
-        self.isReversed = false
         self.pitchSemitones = 0
         self.duration = duration
         self.createdAt = Date()
