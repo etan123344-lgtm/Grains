@@ -33,72 +33,36 @@ struct SamplePlayerView: View {
             .padding(.horizontal)
             .padding(.top, 4)
 
+            // Mode picker
+            Picker("Mode", selection: $sample.isGranularMode) {
+                Text("Normal").tag(false)
+                Text("Granular").tag(true)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.top, 12)
+            .onChange(of: sample.isGranularMode) {
+                audioEngine.setGranularMode(sample.isGranularMode)
+                if audioEngine.isPlaying {
+                    restartPlayback()
+                }
+            }
+
             Spacer()
 
             // Controls
-            VStack(spacing: 20) {
-                // Play/Stop
-                Button {
-                    if audioEngine.isPlaying {
-                        audioEngine.stop()
-                    } else {
-                        audioEngine.play(
-                            loopStart: sample.loopStart,
-                            loopEnd: sample.loopEnd,
-                            isReversed: sample.isReversed,
-                            pitchSemitones: sample.pitchSemitones
-                        )
-                    }
-                } label: {
-                    Image(systemName: audioEngine.isPlaying ? "stop.fill" : "play.fill")
-                        .font(.system(size: 44))
-                        .frame(width: 80, height: 80)
-                        .background(Circle().fill(.ultraThinMaterial))
-                }
-
-                // Reverse toggle
-                Toggle(isOn: $sample.isReversed) {
-                    Label("Reverse", systemImage: "arrow.left.arrow.right")
-                }
-                .padding(.horizontal, 32)
-                .onChange(of: sample.isReversed) {
-                    if audioEngine.isPlaying {
-                        restartPlayback()
-                    }
-                }
-
-                // Pitch slider
-                VStack(spacing: 4) {
-                    HStack {
-                        Text("Pitch")
-                        Spacer()
-                        Text(String(format: "%+.1f st", sample.pitchSemitones))
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(.horizontal, 32)
-
-                    Slider(value: $sample.pitchSemitones, in: -12...12, step: 0.5)
-                        .padding(.horizontal, 32)
-                        .onChange(of: sample.pitchSemitones) {
-                            audioEngine.setPitch(sample.pitchSemitones)
-                        }
-
-                    // Reset pitch button
-                    if sample.pitchSemitones != 0 {
-                        Button("Reset Pitch") {
-                            sample.pitchSemitones = 0
-                            audioEngine.setPitch(0)
-                        }
-                        .font(.caption)
-                    }
-                }
+            if sample.isGranularMode {
+                GranularControlsView(sample: sample, audioEngine: audioEngine)
+            } else {
+                normalControls
             }
-            .padding(.bottom, 32)
         }
         .navigationTitle(sample.name)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             loadAudio()
+            audioEngine.setGranularMode(sample.isGranularMode)
+            syncGrainParameters()
         }
         .onDisappear {
             audioEngine.shutdown()
@@ -120,6 +84,67 @@ struct SamplePlayerView: View {
         }
     }
 
+    private var normalControls: some View {
+        VStack(spacing: 20) {
+            // Play/Stop
+            Button {
+                if audioEngine.isPlaying {
+                    audioEngine.stop()
+                } else {
+                    audioEngine.play(
+                        loopStart: sample.loopStart,
+                        loopEnd: sample.loopEnd,
+                        isReversed: sample.isReversed,
+                        pitchSemitones: sample.pitchSemitones
+                    )
+                }
+            } label: {
+                Image(systemName: audioEngine.isPlaying ? "stop.fill" : "play.fill")
+                    .font(.system(size: 44))
+                    .frame(width: 80, height: 80)
+                    .background(Circle().fill(.ultraThinMaterial))
+            }
+
+            // Reverse toggle
+            Toggle(isOn: $sample.isReversed) {
+                Label("Reverse", systemImage: "arrow.left.arrow.right")
+            }
+            .padding(.horizontal, 32)
+            .onChange(of: sample.isReversed) {
+                if audioEngine.isPlaying {
+                    restartPlayback()
+                }
+            }
+
+            // Pitch slider
+            VStack(spacing: 4) {
+                HStack {
+                    Text("Pitch")
+                    Spacer()
+                    Text(String(format: "%+.1f st", sample.pitchSemitones))
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 32)
+
+                Slider(value: $sample.pitchSemitones, in: -12...12, step: 0.5)
+                    .padding(.horizontal, 32)
+                    .onChange(of: sample.pitchSemitones) {
+                        audioEngine.setPitch(sample.pitchSemitones)
+                    }
+
+                // Reset pitch button
+                if sample.pitchSemitones != 0 {
+                    Button("Reset Pitch") {
+                        sample.pitchSemitones = 0
+                        audioEngine.setPitch(0)
+                    }
+                    .font(.caption)
+                }
+            }
+        }
+        .padding(.bottom, 32)
+    }
+
     private func loadAudio() {
         do {
             try audioEngine.loadFile(url: sample.fileURL)
@@ -134,12 +159,30 @@ struct SamplePlayerView: View {
 
     private func restartPlayback() {
         audioEngine.stop()
-        audioEngine.play(
-            loopStart: sample.loopStart,
-            loopEnd: sample.loopEnd,
-            isReversed: sample.isReversed,
-            pitchSemitones: sample.pitchSemitones
-        )
+        if sample.isGranularMode {
+            syncGrainParameters()
+            audioEngine.playGranular(
+                loopStart: sample.loopStart,
+                loopEnd: sample.loopEnd,
+                pitchSemitones: sample.pitchSemitones
+            )
+        } else {
+            audioEngine.play(
+                loopStart: sample.loopStart,
+                loopEnd: sample.loopEnd,
+                isReversed: sample.isReversed,
+                pitchSemitones: sample.pitchSemitones
+            )
+        }
+    }
+
+    private func syncGrainParameters() {
+        audioEngine.setGrainRate(sample.grainRate)
+        audioEngine.setGrainDuration(sample.grainDuration)
+        audioEngine.setShiftSpeed(sample.shiftSpeed)
+        audioEngine.setShiftDirection(sample.shiftDirection)
+        audioEngine.setGrainEnvelope(attack: sample.grainAttack, release: sample.grainRelease)
+        audioEngine.setNoteEnvelope(attack: sample.noteAttack, release: sample.noteRelease)
     }
 
     private func formatTime(_ seconds: Double) -> String {

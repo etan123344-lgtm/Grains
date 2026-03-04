@@ -22,6 +22,8 @@
 		BB0001072F4F000100D08E78 /* SamplePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001072F4F000100D08E78 /* SamplePlayerView.swift */; };
 		BB0001082F4F000100D08E78 /* WaveformEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001082F4F000100D08E78 /* WaveformEditorView.swift */; };
 		BB0001092F4F000100D08E78 /* RecordingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001092F4F000100D08E78 /* RecordingSheet.swift */; };
+		DD0001012F60000100D08E78 /* GrainEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0001002F60000100D08E78 /* GrainEngine.swift */; };
+		DD0001032F60000100D08E78 /* GranularControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0001022F60000100D08E78 /* GranularControlsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +62,8 @@
 		AA0001072F4F000100D08E78 /* SamplePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplePlayerView.swift; sourceTree = "<group>"; };
 		AA0001082F4F000100D08E78 /* WaveformEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformEditorView.swift; sourceTree = "<group>"; };
 		AA0001092F4F000100D08E78 /* RecordingSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingSheet.swift; sourceTree = "<group>"; };
+		DD0001002F60000100D08E78 /* GrainEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrainEngine.swift; sourceTree = "<group>"; };
+		DD0001022F60000100D08E78 /* GranularControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GranularControlsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +163,7 @@
 				AA0001022F4F000100D08E78 /* AudioEngineService.swift */,
 				AA0001032F4F000100D08E78 /* AudioRecorderService.swift */,
 				AA0001052F4F000100D08E78 /* FileManagerService.swift */,
+				DD0001002F60000100D08E78 /* GrainEngine.swift */,
 				AA00010A2F4F000100D08E78 /* WaveformGenerator.swift */,
 			);
 			path = Services;
@@ -167,6 +172,7 @@
 		CC0001032F4F000100D08E78 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				DD0001022F60000100D08E78 /* GranularControlsView.swift */,
 				AA0001062F4F000100D08E78 /* HomeView.swift */,
 				AA0001092F4F000100D08E78 /* RecordingSheet.swift */,
 				AA0001072F4F000100D08E78 /* SamplePlayerView.swift */,
@@ -315,6 +321,8 @@
 				BB0001072F4F000100D08E78 /* SamplePlayerView.swift in Sources */,
 				BB0001082F4F000100D08E78 /* WaveformEditorView.swift in Sources */,
 				BB0001092F4F000100D08E78 /* RecordingSheet.swift in Sources */,
+				DD0001012F60000100D08E78 /* GrainEngine.swift in Sources */,
+				DD0001032F60000100D08E78 /* GranularControlsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
