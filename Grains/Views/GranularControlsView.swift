@@ -5,7 +5,7 @@ struct GranularControlsView: View {
     var audioEngine: AudioEngineService
 
     private var density: Float {
-        sample.grainDuration * sample.grainRate
+        sample.grainRate
     }
 
     var body: some View {
@@ -29,23 +29,21 @@ struct GranularControlsView: View {
                         .background(Circle().fill(.ultraThinMaterial))
                 }
 
-                // Density display
-                HStack {
-                    Text("Density")
-                    Spacer()
-                    Text(String(format: "%.1fx", density))
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.horizontal, 32)
+                // Density (controls grain rate)
+                VStack(spacing: 4) {
+                    HStack {
+                        Text("Density")
+                        Spacer()
+                        Text(String(format: "%.1fx", density))
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.horizontal, 32)
 
-                // Grain Rate
-                parameterSlider(
-                    label: "Grain Rate",
-                    value: $sample.grainRate,
-                    range: 1...100,
-                    format: "%.0f Hz"
-                ) {
-                    audioEngine.setGrainRate(sample.grainRate)
+                    Slider(value: $sample.grainRate, in: 1...32)
+                        .padding(.horizontal, 32)
+                        .onChange(of: sample.grainRate) {
+                            audioEngine.setGrainRate(sample.grainRate)
+                        }
                 }
 
                 // Grain Size
