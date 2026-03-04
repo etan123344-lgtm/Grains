@@ -101,7 +101,7 @@ struct SamplePlayerView: View {
             loadAudio()
         }
         .onDisappear {
-            audioEngine.stop()
+            audioEngine.shutdown()
         }
         .onChange(of: sample.loopStart) {
             if audioEngine.isPlaying {

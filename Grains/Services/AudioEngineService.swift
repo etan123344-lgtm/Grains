@@ -39,6 +39,11 @@ final class AudioEngineService {
         fullBuffer = buffer
         audioFormat = format
         currentFile = url
+
+        // play() doesn't pay the startup cost
+        if !engine.isRunning {
+            try engine.start()
+        }
     }
 
     func play(loopStart: Double, loopEnd: Double, isReversed: Bool, pitchSemitones: Float) {
@@ -100,6 +105,11 @@ final class AudioEngineService {
     }
 
     func stop() {
+        playerNode.stop()
+        isPlaying = false
+    }
+
+    func shutdown() {
         playerNode.stop()
         if engine.isRunning {
             engine.stop()
