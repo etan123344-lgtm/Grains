@@ -9,33 +9,16 @@ struct SamplePlayerView: View {
     @State private var showingError = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Waveform editor
-            WaveformEditorView(
-                waveformSamples: waveformSamples,
-                loopStart: $sample.loopStart,
-                loopEnd: $sample.loopEnd,
-                duration: sample.duration
-            )
-            .padding(.horizontal)
-            .padding(.top, 16)
+        TabView {
+            samplerTab
+                .tabItem {
+                    Label("Sampler", systemImage: "waveform")
+                }
 
-            // Loop time labels
-            HStack {
-                Text(formatTime(sample.loopStart))
-                    .font(.caption)
-                    .foregroundStyle(.black)
-                Spacer()
-                Text(formatTime(sample.loopEnd))
-                    .font(.caption)
-                    .foregroundStyle(.black)
-            }
-            .padding(.horizontal)
-            .padding(.top, 4)
-
-            Spacer()
-
-            GranularControlsView(sample: sample, audioEngine: audioEngine)
+            MixerView(audioEngine: audioEngine)
+                .tabItem {
+                    Label("Mixer", systemImage: "slider.vertical.3")
+                }
         }
         .navigationTitle(sample.name)
         .navigationBarTitleDisplayMode(.inline)
@@ -60,6 +43,35 @@ struct SamplePlayerView: View {
             Button("OK") {}
         } message: {
             Text(errorMessage ?? "An unknown error occurred.")
+        }
+    }
+
+    private var samplerTab: some View {
+        VStack(spacing: 0) {
+            WaveformEditorView(
+                waveformSamples: waveformSamples,
+                loopStart: $sample.loopStart,
+                loopEnd: $sample.loopEnd,
+                duration: sample.duration
+            )
+            .padding(.horizontal)
+            .padding(.top, 16)
+
+            HStack {
+                Text(formatTime(sample.loopStart))
+                    .font(.caption)
+                    .foregroundStyle(.black)
+                Spacer()
+                Text(formatTime(sample.loopEnd))
+                    .font(.caption)
+                    .foregroundStyle(.black)
+            }
+            .padding(.horizontal)
+            .padding(.top, 4)
+
+            Spacer()
+
+            GranularControlsView(sample: sample, audioEngine: audioEngine)
         }
     }
 

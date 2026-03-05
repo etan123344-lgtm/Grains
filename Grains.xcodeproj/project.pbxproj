@@ -24,6 +24,7 @@
 		BB0001092F4F000100D08E78 /* RecordingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001092F4F000100D08E78 /* RecordingSheet.swift */; };
 		DD0001012F60000100D08E78 /* GrainEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0001002F60000100D08E78 /* GrainEngine.swift */; };
 		DD0001032F60000100D08E78 /* GranularControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0001022F60000100D08E78 /* GranularControlsView.swift */; };
+		EE0001012F70000100D08E78 /* MixerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0001002F70000100D08E78 /* MixerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		AA0001092F4F000100D08E78 /* RecordingSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingSheet.swift; sourceTree = "<group>"; };
 		DD0001002F60000100D08E78 /* GrainEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrainEngine.swift; sourceTree = "<group>"; };
 		DD0001022F60000100D08E78 /* GranularControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GranularControlsView.swift; sourceTree = "<group>"; };
+		EE0001002F70000100D08E78 /* MixerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 			children = (
 				DD0001022F60000100D08E78 /* GranularControlsView.swift */,
 				AA0001062F4F000100D08E78 /* HomeView.swift */,
+EE0001002F70000100D08E78 /* MixerView.swift */,
 				AA0001092F4F000100D08E78 /* RecordingSheet.swift */,
 				AA0001072F4F000100D08E78 /* SamplePlayerView.swift */,
 				AA0001082F4F000100D08E78 /* WaveformEditorView.swift */,
@@ -323,6 +326,7 @@
 				BB0001092F4F000100D08E78 /* RecordingSheet.swift in Sources */,
 				DD0001012F60000100D08E78 /* GrainEngine.swift in Sources */,
 				DD0001032F60000100D08E78 /* GranularControlsView.swift in Sources */,
+				EE0001012F70000100D08E78 /* MixerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
