@@ -10,6 +10,8 @@ struct HomeView: View {
     @State private var showingFileImporter = false
     @State private var errorMessage: String?
     @State private var showingError = false
+    @State private var sampleToRename: Sample?
+    @State private var renameText = ""
 
     var body: some View {
         NavigationStack {
@@ -32,8 +34,22 @@ struct HomeView: View {
                             }
                             .padding(.vertical, 4)
                         }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                FileManagerService.deleteFile(named: sample.fileName)
+                                modelContext.delete(sample)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                            Button {
+                                renameText = sample.name
+                                sampleToRename = sample
+                            } label: {
+                                Label("Rename", systemImage: "pencil")
+                            }
+                            .tint(.orange)
+                        }
                     }
-                    .onDelete(perform: deleteSamples)
                 }
             }
             .navigationTitle("Grains")
@@ -68,6 +84,21 @@ struct HomeView: View {
             ) { result in
                 handleFileImport(result)
             }
+            .alert("Rename Sample", isPresented: Binding(
+                get: { sampleToRename != nil },
+                set: { if !$0 { sampleToRename = nil } }
+            )) {
+                TextField("Name", text: $renameText)
+                Button("Cancel", role: .cancel) {
+                    sampleToRename = nil
+                }
+                Button("Rename") {
+                    if let sample = sampleToRename, !renameText.trimmingCharacters(in: .whitespaces).isEmpty {
+                        sample.name = renameText.trimmingCharacters(in: .whitespaces)
+                    }
+                    sampleToRename = nil
+                }
+            }
             .alert("Error", isPresented: $showingError) {
                 Button("OK") {}
             } message: {
@@ -92,16 +123,6 @@ struct HomeView: View {
         case .failure(let error):
             errorMessage = error.localizedDescription
             showingError = true
-        }
-    }
-
-    private func deleteSamples(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                let sample = samples[index]
-                FileManagerService.deleteFile(named: sample.fileName)
-                modelContext.delete(sample)
-            }
         }
     }
 
