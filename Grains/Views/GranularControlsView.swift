@@ -4,13 +4,9 @@ struct GranularControlsView: View {
     @Bindable var sample: Sample
     var audioEngine: AudioEngineService
 
-    private var density: Float {
-        sample.grainRate
-    }
-
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
+            VStack(spacing: 16) {
                 // Play/Stop
                 Button {
                     if audioEngine.isPlaying {
@@ -23,31 +19,38 @@ struct GranularControlsView: View {
                         )
                     }
                 } label: {
-                    Image(systemName: audioEngine.isPlaying ? "stop.fill" : "play.fill")
-                        .font(.system(size: 44))
-                        .frame(width: 80, height: 80)
-                        .background(Circle().fill(.ultraThinMaterial))
-                }
-
-                // Density (controls grain rate)
-                VStack(spacing: 4) {
-                    HStack {
-                        Text("Density")
-                        Spacer()
-                        Text(String(format: "%.1fx", density))
-                            .foregroundStyle(.secondary)
+                    HStack(spacing: 8) {
+                        Image(systemName: audioEngine.isPlaying ? "stop.fill" : "play.fill")
+                            .font(.system(size: 16, weight: .bold, design: .monospaced))
+                        Text(audioEngine.isPlaying ? "STOP" : "PLAY")
+                            .font(DS.monoLarge)
                     }
-                    .padding(.horizontal, 32)
+                    .foregroundStyle(audioEngine.isPlaying ? DS.text : .white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(
+                        RoundedRectangle(cornerRadius: DS.cornerRadius)
+                            .fill(audioEngine.isPlaying ? DS.surface : DS.accent)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: DS.cornerRadius)
+                            .stroke(audioEngine.isPlaying ? DS.border : DS.accent, lineWidth: DS.borderWidth)
+                    )
+                }
+                .padding(.horizontal, DS.hPad)
 
-                    Slider(value: $sample.grainRate, in: 1...32)
-                        .padding(.horizontal, 32)
-                        .onChange(of: sample.grainRate) {
-                            audioEngine.setGrainRate(sample.grainRate)
-                        }
+                DSSectionHeader(title: "Granular")
+
+                DSParamRow(
+                    label: "Density",
+                    value: $sample.grainRate,
+                    range: 1...32,
+                    format: "%.1fx"
+                ) {
+                    audioEngine.setGrainRate(sample.grainRate)
                 }
 
-                // Grain Size
-                parameterSlider(
+                DSParamRow(
                     label: "Grain Size",
                     value: $sample.grainDuration,
                     range: 0.01...1.0,
@@ -56,8 +59,7 @@ struct GranularControlsView: View {
                     audioEngine.setGrainDuration(sample.grainDuration)
                 }
 
-                // Shift Speed
-                parameterSlider(
+                DSParamRow(
                     label: "Shift Speed",
                     value: $sample.shiftSpeed,
                     range: 0...10,
@@ -67,33 +69,27 @@ struct GranularControlsView: View {
                 }
 
                 // Shift Direction
-                VStack(spacing: 4) {
-                    Text("Shift Direction")
+                VStack(spacing: 6) {
+                    Text("SHIFT DIRECTION")
+                        .font(DS.monoSmall)
+                        .foregroundStyle(DS.textSecondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 32)
+                        .padding(.horizontal, DS.hPad)
 
-                    Picker("Direction", selection: $sample.shiftDirectionRaw) {
-                        Text("Forward").tag(0)
-                        Text("Backward").tag(1)
-                        Text("Random").tag(2)
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal, 32)
+                    DSSegmentedPicker(
+                        labels: ["FWD", "BWD", "RND"],
+                        selection: $sample.shiftDirectionRaw
+                    )
                     .onChange(of: sample.shiftDirectionRaw) {
                         audioEngine.setShiftDirection(sample.shiftDirection)
                     }
                 }
 
-                Divider().padding(.horizontal, 32)
+                DSDivider()
 
-                // Grain Envelope header
-                Text("Grain Envelope")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 32)
+                DSSectionHeader(title: "Grain Envelope")
 
-                // Attack
-                parameterSlider(
+                DSParamRow(
                     label: "Attack",
                     value: $sample.grainAttack,
                     range: 0.01...0.5,
@@ -103,8 +99,7 @@ struct GranularControlsView: View {
                     audioEngine.setGrainEnvelope(attack: sample.grainAttack, release: sample.grainRelease)
                 }
 
-                // Release
-                parameterSlider(
+                DSParamRow(
                     label: "Release",
                     value: $sample.grainRelease,
                     range: 0.01...0.5,
@@ -114,17 +109,12 @@ struct GranularControlsView: View {
                     audioEngine.setGrainEnvelope(attack: sample.grainAttack, release: sample.grainRelease)
                 }
 
-                Divider().padding(.horizontal, 32)
+                DSDivider()
 
-                // Note Envelope header
-                Text("Note Envelope")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 32)
+                DSSectionHeader(title: "Note Envelope")
 
-                // Note Attack
-                parameterSlider(
-                    label: "Note Attack",
+                DSParamRow(
+                    label: "Attack",
                     value: $sample.noteAttack,
                     range: 0.001...2.0,
                     format: "%.3f s"
@@ -132,9 +122,8 @@ struct GranularControlsView: View {
                     audioEngine.setNoteEnvelope(attack: sample.noteAttack, release: sample.noteRelease)
                 }
 
-                // Note Release
-                parameterSlider(
-                    label: "Note Release",
+                DSParamRow(
+                    label: "Release",
                     value: $sample.noteRelease,
                     range: 0.01...5.0,
                     format: "%.2f s"
@@ -142,60 +131,38 @@ struct GranularControlsView: View {
                     audioEngine.setNoteEnvelope(attack: sample.noteAttack, release: sample.noteRelease)
                 }
 
-                // Pitch
-                VStack(spacing: 4) {
-                    HStack {
-                        Text("Pitch")
-                        Spacer()
-                        Text(String(format: "%+.1f st", sample.pitchSemitones))
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(.horizontal, 32)
+                DSDivider()
 
-                    Slider(value: $sample.pitchSemitones, in: -12...12, step: 0.5)
-                        .padding(.horizontal, 32)
-                        .onChange(of: sample.pitchSemitones) {
-                            audioEngine.setPitch(sample.pitchSemitones)
-                        }
+                DSSectionHeader(title: "Pitch")
 
-                    if sample.pitchSemitones != 0 {
-                        Button("Reset Pitch") {
-                            sample.pitchSemitones = 0
-                            audioEngine.setPitch(0)
-                        }
-                        .font(.caption)
+                DSParamRow(
+                    label: "Semitones",
+                    value: $sample.pitchSemitones,
+                    range: -12...12,
+                    step: 0.5,
+                    format: "%+.1f st"
+                ) {
+                    audioEngine.setPitch(sample.pitchSemitones)
+                }
+
+                if sample.pitchSemitones != 0 {
+                    Button {
+                        sample.pitchSemitones = 0
+                        audioEngine.setPitch(0)
+                    } label: {
+                        Text("RESET PITCH")
+                            .font(DS.monoSmall)
+                            .foregroundStyle(DS.accent)
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: DS.cornerRadius)
+                                    .stroke(DS.accent, lineWidth: DS.borderWidth)
+                            )
                     }
                 }
             }
             .padding(.bottom, 32)
-        }
-    }
-
-    // MARK: - Reusable Slider Builder
-
-    @ViewBuilder
-    private func parameterSlider(
-        label: String,
-        value: Binding<Float>,
-        range: ClosedRange<Float>,
-        format: String,
-        displayMultiplier: Float = 1,
-        onChange: @escaping () -> Void
-    ) -> some View {
-        VStack(spacing: 4) {
-            HStack {
-                Text(label)
-                Spacer()
-                Text(String(format: format, value.wrappedValue * displayMultiplier))
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.horizontal, 32)
-
-            Slider(value: value, in: range)
-                .padding(.horizontal, 32)
-                .onChange(of: value.wrappedValue) {
-                    onChange()
-                }
         }
     }
 }

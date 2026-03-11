@@ -15,9 +15,14 @@ struct SamplePlayerView: View {
                     Label("Sampler", systemImage: "waveform")
                 }
 
-            MixerView(audioEngine: audioEngine)
+            GraphicEQView(sample: sample, audioEngine: audioEngine)
                 .tabItem {
-                    Label("Mixer", systemImage: "slider.vertical.3")
+                    Label("EQ", systemImage: "slider.vertical.3")
+                }
+
+            ReverbView(sample: sample, audioEngine: audioEngine)
+                .tabItem {
+                    Label("Reverb", systemImage: "waveform.path.ecg")
                 }
         }
         .navigationTitle(sample.name)
@@ -54,25 +59,25 @@ struct SamplePlayerView: View {
                 loopEnd: $sample.loopEnd,
                 duration: sample.duration
             )
-            .padding(.horizontal)
-            .padding(.top, 16)
+            .padding(.horizontal, DS.hPad)
+            .padding(.top, 12)
 
             HStack {
                 Text(formatTime(sample.loopStart))
-                    .font(.caption)
-                    .foregroundStyle(.black)
+                    .font(DS.monoSmall)
+                    .foregroundStyle(DS.textSecondary)
                 Spacer()
                 Text(formatTime(sample.loopEnd))
-                    .font(.caption)
-                    .foregroundStyle(.black)
+                    .font(DS.monoSmall)
+                    .foregroundStyle(DS.textSecondary)
             }
-            .padding(.horizontal)
+            .padding(.horizontal, DS.hPad)
             .padding(.top, 4)
 
-            Spacer()
-
             GranularControlsView(sample: sample, audioEngine: audioEngine)
+                .padding(.top, 8)
         }
+        .background(DS.bg)
     }
 
     private func loadAudio() {
@@ -104,6 +109,15 @@ struct SamplePlayerView: View {
         audioEngine.setShiftDirection(sample.shiftDirection)
         audioEngine.setGrainEnvelope(attack: sample.grainAttack, release: sample.grainRelease)
         audioEngine.setNoteEnvelope(attack: sample.noteAttack, release: sample.noteRelease)
+        // Graphic EQ
+        audioEngine.setEQEnabled(sample.eqEnabled)
+        audioEngine.setAllEQGains(sample.eqGains)
+        // Reverb
+        audioEngine.setReverbEnabled(sample.reverbEnabled)
+        audioEngine.setReverbRoomSize(sample.reverbRoomSize)
+        audioEngine.setReverbDamping(sample.reverbDamping)
+        audioEngine.setReverbWetDry(sample.reverbWetDry)
+        audioEngine.setReverbPreDelay(sample.reverbPreDelay)
     }
 
     private func formatTime(_ seconds: Double) -> String {

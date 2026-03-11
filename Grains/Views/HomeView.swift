@@ -15,62 +15,93 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            List {
+            ZStack {
+                DS.bg.ignoresSafeArea()
+
                 if samples.isEmpty {
-                    ContentUnavailableView(
-                        "No Samples",
-                        systemImage: "waveform",
-                        description: Text("Record or import an audio file to get started.")
-                    )
+                    VStack(spacing: 12) {
+                        Image(systemName: "waveform")
+                            .font(.system(size: 32, weight: .thin, design: .monospaced))
+                            .foregroundStyle(DS.border)
+                        Text("NO SAMPLES")
+                            .font(DS.monoLarge)
+                            .foregroundStyle(DS.textSecondary)
+                        Text("RECORD OR IMPORT AN AUDIO FILE")
+                            .font(DS.monoSmall)
+                            .foregroundStyle(DS.textSecondary)
+                    }
                 } else {
-                    ForEach(samples) { sample in
-                        NavigationLink(destination: SamplePlayerView(sample: sample)) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(sample.name)
-                                    .font(.headline)
-                                Text(formatDuration(sample.duration))
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                    ScrollView {
+                        LazyVStack(spacing: 0) {
+                            ForEach(samples) { sample in
+                                NavigationLink(destination: SamplePlayerView(sample: sample)) {
+                                    sampleRow(sample)
+                                }
+                                .buttonStyle(.plain)
+                                .contextMenu {
+                                    Button {
+                                        renameText = sample.name
+                                        sampleToRename = sample
+                                    } label: {
+                                        Label("Rename", systemImage: "pencil")
+                                    }
+                                    Button(role: .destructive) {
+                                        FileManagerService.deleteFile(named: sample.fileName)
+                                        modelContext.delete(sample)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                }
                             }
-                            .padding(.vertical, 4)
                         }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(role: .destructive) {
-                                FileManagerService.deleteFile(named: sample.fileName)
-                                modelContext.delete(sample)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                            Button {
-                                renameText = sample.name
-                                sampleToRename = sample
-                            } label: {
-                                Label("Rename", systemImage: "pencil")
-                            }
-                            .tint(.orange)
-                        }
+                        .padding(.top, 8)
                     }
                 }
             }
-            .navigationTitle("Grains")
+            .navigationTitle("")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu {
+                    HStack(spacing: 12) {
                         Button {
                             showingRecordingSheet = true
                         } label: {
-                            Label("Record", systemImage: "mic")
+                            HStack(spacing: 4) {
+                                Image(systemName: "mic")
+                                    .font(.system(size: 12, weight: .semibold))
+                                Text("REC")
+                                    .font(DS.monoSmall)
+                            }
+                            .foregroundStyle(DS.accent)
+                            .padding(.vertical, 5)
+                            .padding(.horizontal, 10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: DS.cornerRadius)
+                                    .stroke(DS.accent, lineWidth: DS.borderWidth)
+                            )
                         }
+
                         Button {
                             showingFileImporter = true
                         } label: {
-                            Label("Import File", systemImage: "doc.badge.plus")
+                            HStack(spacing: 4) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 12, weight: .semibold))
+                                Text("IMPORT")
+                                    .font(DS.monoSmall)
+                            }
+                            .foregroundStyle(DS.text)
+                            .padding(.vertical, 5)
+                            .padding(.horizontal, 10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: DS.cornerRadius)
+                                    .stroke(DS.border, lineWidth: DS.borderWidth)
+                            )
                         }
-                    } label: {
-                        Image(systemName: "plus")
                     }
                 }
             }
+            .toolbarBackground(DS.bg, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .sheet(isPresented: $showingRecordingSheet) {
                 RecordingSheet { name, fileName, duration in
                     let sample = Sample(name: name, fileName: fileName, duration: duration)
@@ -106,6 +137,53 @@ struct HomeView: View {
             }
         }
     }
+
+    // MARK: - Sample Row
+
+    private func sampleRow(_ sample: Sample) -> some View {
+        HStack(spacing: 12) {
+            // Waveform icon
+            RoundedRectangle(cornerRadius: DS.cornerRadius)
+                .fill(DS.surface)
+                .frame(width: 40, height: 40)
+                .overlay(
+                    Image(systemName: "waveform")
+                        .font(.system(size: 16, weight: .light))
+                        .foregroundStyle(DS.accent)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: DS.cornerRadius)
+                        .stroke(DS.border, lineWidth: DS.borderWidth)
+                )
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(sample.name.uppercased())
+                    .font(DS.mono)
+                    .foregroundStyle(DS.text)
+                    .lineLimit(1)
+                Text(formatDuration(sample.duration))
+                    .font(DS.monoSmall)
+                    .foregroundStyle(DS.textSecondary)
+            }
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(DS.border)
+        }
+        .padding(.horizontal, DS.hPad)
+        .padding(.vertical, 10)
+        .background(DS.bg)
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(DS.border.opacity(0.5))
+                .frame(height: 0.5)
+                .padding(.leading, DS.hPad + 52)
+        }
+    }
+
+    // MARK: - Helpers
 
     private func handleFileImport(_ result: Result<[URL], Error>) {
         switch result {

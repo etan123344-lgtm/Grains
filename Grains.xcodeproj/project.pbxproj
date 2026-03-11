@@ -24,7 +24,11 @@
 		BB0001092F4F000100D08E78 /* RecordingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001092F4F000100D08E78 /* RecordingSheet.swift */; };
 		DD0001012F60000100D08E78 /* GrainEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0001002F60000100D08E78 /* GrainEngine.swift */; };
 		DD0001032F60000100D08E78 /* GranularControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0001022F60000100D08E78 /* GranularControlsView.swift */; };
-		EE0001012F70000100D08E78 /* MixerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0001002F70000100D08E78 /* MixerView.swift */; };
+		EE0001012F70000100D08E78 /* ReverbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0001002F70000100D08E78 /* ReverbView.swift */; };
+		FF0001012F80000100D08E78 /* GraphicEQEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0001002F80000100D08E78 /* GraphicEQEngine.swift */; };
+		FF0001032F80000100D08E78 /* GraphicEQView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0001022F80000100D08E78 /* GraphicEQView.swift */; };
+		GG0001012F90000100D08E78 /* ReverbEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = GG0001002F90000100D08E78 /* ReverbEngine.swift */; };
+		HH0001012FA0000100D08E78 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = HH0001002FA0000100D08E78 /* DesignSystem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,7 +69,11 @@
 		AA0001092F4F000100D08E78 /* RecordingSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingSheet.swift; sourceTree = "<group>"; };
 		DD0001002F60000100D08E78 /* GrainEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrainEngine.swift; sourceTree = "<group>"; };
 		DD0001022F60000100D08E78 /* GranularControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GranularControlsView.swift; sourceTree = "<group>"; };
-		EE0001002F70000100D08E78 /* MixerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixerView.swift; sourceTree = "<group>"; };
+		EE0001002F70000100D08E78 /* ReverbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverbView.swift; sourceTree = "<group>"; };
+		FF0001002F80000100D08E78 /* GraphicEQEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicEQEngine.swift; sourceTree = "<group>"; };
+		FF0001022F80000100D08E78 /* GraphicEQView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicEQView.swift; sourceTree = "<group>"; };
+		GG0001002F90000100D08E78 /* ReverbEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverbEngine.swift; sourceTree = "<group>"; };
+		HH0001002FA0000100D08E78 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +174,8 @@
 				AA0001032F4F000100D08E78 /* AudioRecorderService.swift */,
 				AA0001052F4F000100D08E78 /* FileManagerService.swift */,
 				DD0001002F60000100D08E78 /* GrainEngine.swift */,
+				FF0001002F80000100D08E78 /* GraphicEQEngine.swift */,
+				GG0001002F90000100D08E78 /* ReverbEngine.swift */,
 				AA00010A2F4F000100D08E78 /* WaveformGenerator.swift */,
 			);
 			path = Services;
@@ -174,9 +184,11 @@
 		CC0001032F4F000100D08E78 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				HH0001002FA0000100D08E78 /* DesignSystem.swift */,
 				DD0001022F60000100D08E78 /* GranularControlsView.swift */,
 				AA0001062F4F000100D08E78 /* HomeView.swift */,
-EE0001002F70000100D08E78 /* MixerView.swift */,
+EE0001002F70000100D08E78 /* ReverbView.swift */,
+				FF0001022F80000100D08E78 /* GraphicEQView.swift */,
 				AA0001092F4F000100D08E78 /* RecordingSheet.swift */,
 				AA0001072F4F000100D08E78 /* SamplePlayerView.swift */,
 				AA0001082F4F000100D08E78 /* WaveformEditorView.swift */,
@@ -326,7 +338,11 @@ EE0001002F70000100D08E78 /* MixerView.swift */,
 				BB0001092F4F000100D08E78 /* RecordingSheet.swift in Sources */,
 				DD0001012F60000100D08E78 /* GrainEngine.swift in Sources */,
 				DD0001032F60000100D08E78 /* GranularControlsView.swift in Sources */,
-				EE0001012F70000100D08E78 /* MixerView.swift in Sources */,
+				EE0001012F70000100D08E78 /* ReverbView.swift in Sources */,
+				FF0001012F80000100D08E78 /* GraphicEQEngine.swift in Sources */,
+				FF0001032F80000100D08E78 /* GraphicEQView.swift in Sources */,
+				GG0001012F90000100D08E78 /* ReverbEngine.swift in Sources */,
+				HH0001012FA0000100D08E78 /* DesignSystem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

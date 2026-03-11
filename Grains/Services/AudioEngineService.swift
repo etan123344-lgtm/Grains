@@ -8,6 +8,8 @@ final class AudioEngineService {
 
     private var sourceNode: AVAudioSourceNode?
     let grainEngine = GrainEngine()
+    let graphicEQ = GraphicEQEngine()
+    let reverbEngine = ReverbEngine()
 
     private var fullBuffer: AVAudioPCMBuffer?
     private var audioFormat: AVAudioFormat?
@@ -31,6 +33,8 @@ final class AudioEngineService {
         engine.disconnectNodeOutput(varispeed)
 
         let ge = grainEngine
+        let eq = graphicEQ
+        let rv = reverbEngine
         let node = AVAudioSourceNode(format: format) { _, _, frameCount, audioBufferList -> OSStatus in
             let ablPointer = UnsafeMutableAudioBufferListPointer(audioBufferList)
             let outL = ablPointer[0].mData!.assumingMemoryBound(to: Float.self)
@@ -39,6 +43,8 @@ final class AudioEngineService {
                 : outL
 
             _ = ge.render(outputL: outL, outputR: outR, frameCount: Int(frameCount))
+            eq.process(inputL: outL, inputR: outR, frameCount: Int(frameCount))
+            rv.process(inputL: outL, inputR: outR, frameCount: Int(frameCount))
             return noErr
         }
 
@@ -78,6 +84,8 @@ final class AudioEngineService {
             )
         }
 
+        graphicEQ.configure(sampleRate: Float(format.sampleRate))
+        reverbEngine.configure(sampleRate: Float(format.sampleRate))
         connectGranularPath(format: format)
 
         if !engine.isRunning {
@@ -160,6 +168,42 @@ final class AudioEngineService {
             $0.noteAttack = attack
             $0.noteRelease = release
         }
+    }
+
+    // MARK: - Graphic EQ Parameter Setters
+
+    func setEQEnabled(_ enabled: Bool) {
+        graphicEQ.setParameters { $0.isEnabled = enabled }
+    }
+
+    func setEQBandGain(band: EQBand, gain: Float) {
+        graphicEQ.setParameters { $0.gains[band.rawValue] = gain }
+    }
+
+    func setAllEQGains(_ gains: [Float]) {
+        graphicEQ.setParameters { $0.gains = gains }
+    }
+
+    // MARK: - Reverb Parameter Setters
+
+    func setReverbEnabled(_ enabled: Bool) {
+        reverbEngine.setParameters { $0.isEnabled = enabled }
+    }
+
+    func setReverbRoomSize(_ size: Float) {
+        reverbEngine.setParameters { $0.roomSize = size }
+    }
+
+    func setReverbDamping(_ damping: Float) {
+        reverbEngine.setParameters { $0.damping = damping }
+    }
+
+    func setReverbWetDry(_ mix: Float) {
+        reverbEngine.setParameters { $0.wetDry = mix }
+    }
+
+    func setReverbPreDelay(_ ms: Float) {
+        reverbEngine.setParameters { $0.preDelay = ms }
     }
 
     func getFullBuffer() -> AVAudioPCMBuffer? {
