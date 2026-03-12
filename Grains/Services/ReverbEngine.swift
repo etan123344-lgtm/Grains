@@ -220,6 +220,9 @@ final class ReverbEngine {
             // One-pole lowpass in feedback loop: y = (1-damp)*x + damp*y_prev
             lpState = delayed * (1.0 - damping) + lpState * damping
 
+            // Guard against NaN/Inf corrupting the feedback loop permanently
+            if !lpState.isFinite { lpState = 0 }
+
             // Write input + filtered feedback back into the delay line
             buffer[writeIndex] = sample + lpState * feedback
 

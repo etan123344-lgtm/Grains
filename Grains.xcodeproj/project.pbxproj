@@ -28,6 +28,7 @@
 		FF0001012F80000100D08E78 /* GraphicEQEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0001002F80000100D08E78 /* GraphicEQEngine.swift */; };
 		FF0001032F80000100D08E78 /* GraphicEQView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0001022F80000100D08E78 /* GraphicEQView.swift */; };
 		GG0001012F90000100D08E78 /* ReverbEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = GG0001002F90000100D08E78 /* ReverbEngine.swift */; };
+		II0001012FB0000100D08E78 /* EffectProcessorUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = II0001002FB0000100D08E78 /* EffectProcessorUnit.swift */; };
 		HH0001012FA0000100D08E78 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = HH0001002FA0000100D08E78 /* DesignSystem.swift */; };
 /* End PBXBuildFile section */
 
@@ -73,6 +74,7 @@
 		FF0001002F80000100D08E78 /* GraphicEQEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicEQEngine.swift; sourceTree = "<group>"; };
 		FF0001022F80000100D08E78 /* GraphicEQView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicEQView.swift; sourceTree = "<group>"; };
 		GG0001002F90000100D08E78 /* ReverbEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverbEngine.swift; sourceTree = "<group>"; };
+		II0001002FB0000100D08E78 /* EffectProcessorUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectProcessorUnit.swift; sourceTree = "<group>"; };
 		HH0001002FA0000100D08E78 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -176,6 +178,7 @@
 				DD0001002F60000100D08E78 /* GrainEngine.swift */,
 				FF0001002F80000100D08E78 /* GraphicEQEngine.swift */,
 				GG0001002F90000100D08E78 /* ReverbEngine.swift */,
+				II0001002FB0000100D08E78 /* EffectProcessorUnit.swift */,
 				AA00010A2F4F000100D08E78 /* WaveformGenerator.swift */,
 			);
 			path = Services;
@@ -342,6 +345,7 @@ EE0001002F70000100D08E78 /* ReverbView.swift */,
 				FF0001012F80000100D08E78 /* GraphicEQEngine.swift in Sources */,
 				FF0001032F80000100D08E78 /* GraphicEQView.swift in Sources */,
 				GG0001012F90000100D08E78 /* ReverbEngine.swift in Sources */,
+				II0001012FB0000100D08E78 /* EffectProcessorUnit.swift in Sources */,
 				HH0001012FA0000100D08E78 /* DesignSystem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

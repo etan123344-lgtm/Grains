@@ -7,6 +7,7 @@ final class AudioEngineService {
     private let varispeed = AVAudioUnitVarispeed()
 
     private var sourceNode: AVAudioSourceNode?
+    private var effectNode: AVAudioUnit?
     let grainEngine = GrainEngine()
     let graphicEQ = GraphicEQEngine()
     let reverbEngine = ReverbEngine()
@@ -18,6 +19,7 @@ final class AudioEngineService {
     private(set) var currentFile: URL?
 
     init() {
+        EffectProcessorAU.register()
         engine.attach(varispeed)
     }
 
@@ -30,28 +32,45 @@ final class AudioEngineService {
             engine.detach(src)
             sourceNode = nil
         }
+        if let fx = effectNode {
+            engine.disconnectNodeOutput(fx)
+            engine.detach(fx)
+            effectNode = nil
+        }
         engine.disconnectNodeOutput(varispeed)
 
+        // Source node: granular synthesis only
         let ge = grainEngine
-        let eq = graphicEQ
-        let rv = reverbEngine
         let node = AVAudioSourceNode(format: format) { _, _, frameCount, audioBufferList -> OSStatus in
             let ablPointer = UnsafeMutableAudioBufferListPointer(audioBufferList)
             let outL = ablPointer[0].mData!.assumingMemoryBound(to: Float.self)
             let outR = ablPointer.count > 1
                 ? ablPointer[1].mData!.assumingMemoryBound(to: Float.self)
                 : outL
-
             _ = ge.render(outputL: outL, outputR: outR, frameCount: Int(frameCount))
-            eq.process(inputL: outL, inputR: outR, frameCount: Int(frameCount))
-            rv.process(inputL: outL, inputR: outR, frameCount: Int(frameCount))
             return noErr
         }
-
         sourceNode = node
         engine.attach(node)
+
+        // Effect node: EQ + reverb, placed after varispeed so pitch changes
+        // don't disrupt the EQ/reverb filter state
+        let effect = AVAudioUnitEffect(audioComponentDescription: EffectProcessorAU.componentDescription)
+        if let au = effect.auAudioUnit as? EffectProcessorAU {
+            let eq = graphicEQ
+            let rv = reverbEngine
+            au.processBlock = { left, right, frameCount in
+                eq.process(inputL: left, inputR: right, frameCount: frameCount)
+                rv.process(inputL: left, inputR: right, frameCount: frameCount)
+            }
+        }
+        effectNode = effect
+        engine.attach(effect)
+
+        // Chain: sourceNode -> varispeed -> effect (EQ+reverb) -> mainMixer
         engine.connect(node, to: varispeed, format: format)
-        engine.connect(varispeed, to: engine.mainMixerNode, format: format)
+        engine.connect(varispeed, to: effect, format: format)
+        engine.connect(effect, to: engine.mainMixerNode, format: format)
     }
 
     // MARK: - File Loading
@@ -127,6 +146,10 @@ final class AudioEngineService {
         if let src = sourceNode {
             engine.detach(src)
             sourceNode = nil
+        }
+        if let fx = effectNode {
+            engine.detach(fx)
+            effectNode = nil
         }
         if engine.isRunning {
             engine.stop()
