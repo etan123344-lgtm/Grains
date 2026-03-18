@@ -62,6 +62,24 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack(spacing: 12) {
+                        NavigationLink {
+                            RadioView()
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "radio")
+                                    .font(.system(size: 12, weight: .semibold))
+                                Text("RADIO")
+                                    .font(DS.monoSmall)
+                            }
+                            .foregroundStyle(DS.accent)
+                            .padding(.vertical, 5)
+                            .padding(.horizontal, 10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: DS.cornerRadius)
+                                    .stroke(DS.accent, lineWidth: DS.borderWidth)
+                            )
+                        }
+
                         Button {
                             showingRecordingSheet = true
                         } label: {
@@ -71,12 +89,12 @@ struct HomeView: View {
                                 Text("REC")
                                     .font(DS.monoSmall)
                             }
-                            .foregroundStyle(DS.accent)
+                            .foregroundStyle(DS.text)
                             .padding(.vertical, 5)
                             .padding(.horizontal, 10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: DS.cornerRadius)
-                                    .stroke(DS.accent, lineWidth: DS.borderWidth)
+                                    .stroke(DS.border, lineWidth: DS.borderWidth)
                             )
                         }
 

@@ -30,6 +30,9 @@
 		GG0001012F90000100D08E78 /* ReverbEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = GG0001002F90000100D08E78 /* ReverbEngine.swift */; };
 		II0001012FB0000100D08E78 /* EffectProcessorUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = II0001002FB0000100D08E78 /* EffectProcessorUnit.swift */; };
 		HH0001012FA0000100D08E78 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = HH0001002FA0000100D08E78 /* DesignSystem.swift */; };
+		JJ0001012FC0000100D08E78 /* RadioStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = JJ0001002FC0000100D08E78 /* RadioStation.swift */; };
+		KK0001012FC0000100D08E78 /* RadioService.swift in Sources */ = {isa = PBXBuildFile; fileRef = KK0001002FC0000100D08E78 /* RadioService.swift */; };
+		LL0001012FC0000100D08E78 /* RadioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = LL0001002FC0000100D08E78 /* RadioView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +79,10 @@
 		GG0001002F90000100D08E78 /* ReverbEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverbEngine.swift; sourceTree = "<group>"; };
 		II0001002FB0000100D08E78 /* EffectProcessorUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectProcessorUnit.swift; sourceTree = "<group>"; };
 		HH0001002FA0000100D08E78 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		JJ0001002FC0000100D08E78 /* RadioStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioStation.swift; sourceTree = "<group>"; };
+		KK0001002FC0000100D08E78 /* RadioService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioService.swift; sourceTree = "<group>"; };
+		LL0001002FC0000100D08E78 /* RadioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioView.swift; sourceTree = "<group>"; };
+		MM0001002FC0000100D08E78 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +134,7 @@
 			isa = PBXGroup;
 			children = (
 				18D4C0D92F4E4E1E00D08E78 /* GrainsApp.swift */,
+				MM0001002FC0000100D08E78 /* Info.plist */,
 				CC0001012F4F000100D08E78 /* Models */,
 				CC0001022F4F000100D08E78 /* Services */,
 				CC0001032F4F000100D08E78 /* Views */,
@@ -165,6 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				AA0001012F4F000100D08E78 /* Sample.swift */,
+				JJ0001002FC0000100D08E78 /* RadioStation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -180,6 +189,7 @@
 				GG0001002F90000100D08E78 /* ReverbEngine.swift */,
 				II0001002FB0000100D08E78 /* EffectProcessorUnit.swift */,
 				AA00010A2F4F000100D08E78 /* WaveformGenerator.swift */,
+				KK0001002FC0000100D08E78 /* RadioService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -195,6 +205,7 @@ EE0001002F70000100D08E78 /* ReverbView.swift */,
 				AA0001092F4F000100D08E78 /* RecordingSheet.swift */,
 				AA0001072F4F000100D08E78 /* SamplePlayerView.swift */,
 				AA0001082F4F000100D08E78 /* WaveformEditorView.swift */,
+				LL0001002FC0000100D08E78 /* RadioView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -347,6 +358,9 @@ EE0001002F70000100D08E78 /* ReverbView.swift */,
 				GG0001012F90000100D08E78 /* ReverbEngine.swift in Sources */,
 				II0001012FB0000100D08E78 /* EffectProcessorUnit.swift in Sources */,
 				HH0001012FA0000100D08E78 /* DesignSystem.swift in Sources */,
+				JJ0001012FC0000100D08E78 /* RadioStation.swift in Sources */,
+				KK0001012FC0000100D08E78 /* RadioService.swift in Sources */,
+				LL0001012FC0000100D08E78 /* RadioView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -513,6 +527,7 @@ EE0001002F70000100D08E78 /* ReverbView.swift */,
 				DEVELOPMENT_TEAM = TV5335TD3U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Grains/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Grains needs microphone access to record audio samples.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -543,6 +558,7 @@ EE0001002F70000100D08E78 /* ReverbView.swift */,
 				DEVELOPMENT_TEAM = TV5335TD3U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Grains/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Grains needs microphone access to record audio samples.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
