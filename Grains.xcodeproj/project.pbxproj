@@ -16,20 +16,20 @@
 		BB0001012F4F000100D08E78 /* Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001012F4F000100D08E78 /* Sample.swift */; };
 		BB0001022F4F000100D08E78 /* AudioEngineService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001022F4F000100D08E78 /* AudioEngineService.swift */; };
 		BB0001032F4F000100D08E78 /* AudioRecorderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001032F4F000100D08E78 /* AudioRecorderService.swift */; };
-		BB00010A2F4F000100D08E78 /* WaveformGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00010A2F4F000100D08E78 /* WaveformGenerator.swift */; };
 		BB0001052F4F000100D08E78 /* FileManagerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001052F4F000100D08E78 /* FileManagerService.swift */; };
 		BB0001062F4F000100D08E78 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001062F4F000100D08E78 /* HomeView.swift */; };
 		BB0001072F4F000100D08E78 /* SamplePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001072F4F000100D08E78 /* SamplePlayerView.swift */; };
 		BB0001082F4F000100D08E78 /* WaveformEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001082F4F000100D08E78 /* WaveformEditorView.swift */; };
 		BB0001092F4F000100D08E78 /* RecordingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001092F4F000100D08E78 /* RecordingSheet.swift */; };
+		BB00010A2F4F000100D08E78 /* WaveformGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00010A2F4F000100D08E78 /* WaveformGenerator.swift */; };
 		DD0001012F60000100D08E78 /* GrainEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0001002F60000100D08E78 /* GrainEngine.swift */; };
 		DD0001032F60000100D08E78 /* GranularControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0001022F60000100D08E78 /* GranularControlsView.swift */; };
 		EE0001012F70000100D08E78 /* ReverbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0001002F70000100D08E78 /* ReverbView.swift */; };
 		FF0001012F80000100D08E78 /* GraphicEQEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0001002F80000100D08E78 /* GraphicEQEngine.swift */; };
 		FF0001032F80000100D08E78 /* GraphicEQView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0001022F80000100D08E78 /* GraphicEQView.swift */; };
 		GG0001012F90000100D08E78 /* ReverbEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = GG0001002F90000100D08E78 /* ReverbEngine.swift */; };
-		II0001012FB0000100D08E78 /* EffectProcessorUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = II0001002FB0000100D08E78 /* EffectProcessorUnit.swift */; };
 		HH0001012FA0000100D08E78 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = HH0001002FA0000100D08E78 /* DesignSystem.swift */; };
+		II0001012FB0000100D08E78 /* EffectProcessorUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = II0001002FB0000100D08E78 /* EffectProcessorUnit.swift */; };
 		JJ0001012FC0000100D08E78 /* RadioStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = JJ0001002FC0000100D08E78 /* RadioStation.swift */; };
 		KK0001012FC0000100D08E78 /* RadioService.swift in Sources */ = {isa = PBXBuildFile; fileRef = KK0001002FC0000100D08E78 /* RadioService.swift */; };
 		LL0001012FC0000100D08E78 /* RadioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = LL0001002FC0000100D08E78 /* RadioView.swift */; };
@@ -66,19 +66,19 @@
 		AA0001022F4F000100D08E78 /* AudioEngineService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineService.swift; sourceTree = "<group>"; };
 		AA0001032F4F000100D08E78 /* AudioRecorderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderService.swift; sourceTree = "<group>"; };
 		AA0001052F4F000100D08E78 /* FileManagerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerService.swift; sourceTree = "<group>"; };
-		AA00010A2F4F000100D08E78 /* WaveformGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformGenerator.swift; sourceTree = "<group>"; };
 		AA0001062F4F000100D08E78 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		AA0001072F4F000100D08E78 /* SamplePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplePlayerView.swift; sourceTree = "<group>"; };
 		AA0001082F4F000100D08E78 /* WaveformEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformEditorView.swift; sourceTree = "<group>"; };
 		AA0001092F4F000100D08E78 /* RecordingSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingSheet.swift; sourceTree = "<group>"; };
+		AA00010A2F4F000100D08E78 /* WaveformGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformGenerator.swift; sourceTree = "<group>"; };
 		DD0001002F60000100D08E78 /* GrainEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrainEngine.swift; sourceTree = "<group>"; };
 		DD0001022F60000100D08E78 /* GranularControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GranularControlsView.swift; sourceTree = "<group>"; };
 		EE0001002F70000100D08E78 /* ReverbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverbView.swift; sourceTree = "<group>"; };
 		FF0001002F80000100D08E78 /* GraphicEQEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicEQEngine.swift; sourceTree = "<group>"; };
 		FF0001022F80000100D08E78 /* GraphicEQView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicEQView.swift; sourceTree = "<group>"; };
 		GG0001002F90000100D08E78 /* ReverbEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverbEngine.swift; sourceTree = "<group>"; };
-		II0001002FB0000100D08E78 /* EffectProcessorUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectProcessorUnit.swift; sourceTree = "<group>"; };
 		HH0001002FA0000100D08E78 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		II0001002FB0000100D08E78 /* EffectProcessorUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectProcessorUnit.swift; sourceTree = "<group>"; };
 		JJ0001002FC0000100D08E78 /* RadioStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioStation.swift; sourceTree = "<group>"; };
 		KK0001002FC0000100D08E78 /* RadioService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioService.swift; sourceTree = "<group>"; };
 		LL0001002FC0000100D08E78 /* RadioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioView.swift; sourceTree = "<group>"; };
@@ -200,7 +200,7 @@
 				HH0001002FA0000100D08E78 /* DesignSystem.swift */,
 				DD0001022F60000100D08E78 /* GranularControlsView.swift */,
 				AA0001062F4F000100D08E78 /* HomeView.swift */,
-EE0001002F70000100D08E78 /* ReverbView.swift */,
+				EE0001002F70000100D08E78 /* ReverbView.swift */,
 				FF0001022F80000100D08E78 /* GraphicEQView.swift */,
 				AA0001092F4F000100D08E78 /* RecordingSheet.swift */,
 				AA0001072F4F000100D08E78 /* SamplePlayerView.swift */,
@@ -539,7 +539,7 @@ EE0001002F70000100D08E78 /* ReverbView.swift */,
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ethanzoozoopet.Grains;
+				PRODUCT_BUNDLE_IDENTIFIER = ethanzhou.Grains;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -570,7 +570,7 @@ EE0001002F70000100D08E78 /* ReverbView.swift */,
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ethanzoozoopet.Grains;
+				PRODUCT_BUNDLE_IDENTIFIER = ethanzhou.Grains;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -690,7 +690,6 @@ EE0001002F70000100D08E78 /* ReverbView.swift */,
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = 18D4C0CE2F4E4E1E00D08E78 /* Project object */;
 }
