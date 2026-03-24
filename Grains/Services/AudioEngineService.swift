@@ -179,6 +179,10 @@ final class AudioEngineService {
         grainEngine.setParameters { $0.shiftDirection = direction }
     }
 
+    func setDryWetMix(_ mix: Float) {
+        grainEngine.setParameters { $0.dryWetMix = mix }
+    }
+
     func setGrainEnvelope(attack: Float, release: Float) {
         grainEngine.setParameters {
             $0.attackProportion = attack
@@ -235,6 +239,150 @@ final class AudioEngineService {
 
     func getSampleRate() -> Double? {
         audioFormat?.sampleRate
+    }
+
+    // MARK: - Offline Export
+
+    func exportAudio(sample: Sample) throws -> URL {
+        guard let audioFormat, let fullBuffer,
+              let channelData = fullBuffer.floatChannelData else {
+            throw AudioEngineError.bufferCreationFailed
+        }
+
+        let sampleRate = audioFormat.sampleRate
+        let chCount = Int(audioFormat.channelCount)
+        let duration = sample.loopEnd - sample.loopStart
+        guard duration > 0 else { throw AudioEngineError.bufferCreationFailed }
+
+        let totalFrames = AVAudioFrameCount(duration * sampleRate)
+        let maxFrames: AVAudioFrameCount = 512
+
+        // --- Fresh DSP engines with the same parameters ---
+        let offlineGrain = GrainEngine()
+        offlineGrain.configure(
+            sourceL: channelData[0],
+            sourceR: chCount > 1 ? channelData[1] : nil,
+            frameCount: Int(fullBuffer.frameLength),
+            channelCount: chCount,
+            sampleRate: Float(sampleRate)
+        )
+        offlineGrain.setParameters { p in
+            p.grainRate = sample.grainRate
+            p.grainDuration = sample.grainDuration
+            p.shiftSpeed = sample.shiftSpeed
+            p.shiftDirection = sample.shiftDirection
+            p.attackProportion = sample.grainAttack
+            p.releaseProportion = sample.grainRelease
+            p.startPosition = Int(sample.loopStart * sampleRate)
+            p.endPosition = Int(sample.loopEnd * sampleRate)
+            p.noteAttack = sample.noteAttack
+            p.noteRelease = 0.01 // minimal release — no tail
+            p.dryWetMix = sample.dryWetMix
+        }
+
+        let offlineEQ = GraphicEQEngine()
+        offlineEQ.configure(sampleRate: Float(sampleRate))
+        offlineEQ.setParameters { p in
+            p.isEnabled = sample.eqEnabled
+            p.gains = sample.eqGains
+        }
+
+        let offlineReverb = ReverbEngine()
+        offlineReverb.configure(sampleRate: Float(sampleRate))
+        offlineReverb.setParameters { p in
+            p.isEnabled = sample.reverbEnabled
+            p.roomSize = sample.reverbRoomSize
+            p.damping = sample.reverbDamping
+            p.wetDry = sample.reverbWetDry
+            p.preDelay = sample.reverbPreDelay
+        }
+
+        // --- Offline AVAudioEngine ---
+        let offlineEngine = AVAudioEngine()
+        let offlineVarispeed = AVAudioUnitVarispeed()
+        offlineEngine.attach(offlineVarispeed)
+
+        let ge = offlineGrain
+        let sourceNode = AVAudioSourceNode(format: audioFormat) { _, _, frameCount, audioBufferList -> OSStatus in
+            let ablPointer = UnsafeMutableAudioBufferListPointer(audioBufferList)
+            let outL = ablPointer[0].mData!.assumingMemoryBound(to: Float.self)
+            let outR = ablPointer.count > 1
+                ? ablPointer[1].mData!.assumingMemoryBound(to: Float.self)
+                : outL
+            _ = ge.render(outputL: outL, outputR: outR, frameCount: Int(frameCount))
+            return noErr
+        }
+        offlineEngine.attach(sourceNode)
+
+        let effectNode = AVAudioUnitEffect(audioComponentDescription: EffectProcessorAU.componentDescription)
+        if let au = effectNode.auAudioUnit as? EffectProcessorAU {
+            let eq = offlineEQ
+            let rv = offlineReverb
+            au.processBlock = { left, right, frameCount in
+                eq.process(inputL: left, inputR: right, frameCount: frameCount)
+                rv.process(inputL: left, inputR: right, frameCount: frameCount)
+            }
+        }
+        offlineEngine.attach(effectNode)
+
+        offlineEngine.connect(sourceNode, to: offlineVarispeed, format: audioFormat)
+        offlineEngine.connect(offlineVarispeed, to: effectNode, format: audioFormat)
+        offlineEngine.connect(effectNode, to: offlineEngine.mainMixerNode, format: audioFormat)
+
+        try offlineEngine.enableManualRenderingMode(.offline, format: audioFormat, maximumFrameCount: maxFrames)
+        offlineVarispeed.rate = pow(2.0, sample.pitchSemitones / 12.0)
+        try offlineEngine.start()
+
+        offlineGrain.noteOn()
+
+        // --- Output file ---
+        let exportName = sample.name
+            .replacingOccurrences(of: "[^a-zA-Z0-9_\\- ]", with: "", options: .regularExpression)
+            .trimmingCharacters(in: .whitespaces)
+        let outputURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("\(exportName)_export.wav")
+        // Remove stale file if present
+        try? FileManager.default.removeItem(at: outputURL)
+
+        let outputFile = try AVAudioFile(forWriting: outputURL, settings: audioFormat.settings)
+
+        // --- Render loop ---
+        var framesRendered: AVAudioFrameCount = 0
+        let fadeOutFrames: AVAudioFrameCount = min(AVAudioFrameCount(0.02 * sampleRate), totalFrames)
+        let fadeStart = totalFrames - fadeOutFrames
+
+        while framesRendered < totalFrames {
+            let framesToRender = min(maxFrames, totalFrames - framesRendered)
+            guard let renderBuffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: framesToRender) else {
+                throw AudioEngineError.bufferCreationFailed
+            }
+
+            let status = try offlineEngine.renderOffline(framesToRender, to: renderBuffer)
+            guard status == .success else { break }
+
+            // Apply fade-out near the end to prevent clicks
+            if framesRendered + framesToRender > fadeStart {
+                if let chData = renderBuffer.floatChannelData {
+                    for frame in 0..<Int(renderBuffer.frameLength) {
+                        let globalFrame = framesRendered + AVAudioFrameCount(frame)
+                        if globalFrame >= fadeStart {
+                            let fadeProgress = Float(totalFrames - globalFrame) / Float(fadeOutFrames)
+                            for ch in 0..<chCount {
+                                chData[ch][frame] *= fadeProgress
+                            }
+                        }
+                    }
+                }
+            }
+
+            try outputFile.write(from: renderBuffer)
+            framesRendered += framesToRender
+        }
+
+        offlineGrain.noteOff()
+        offlineEngine.stop()
+
+        return outputURL
     }
 }
 

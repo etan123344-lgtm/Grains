@@ -7,6 +7,8 @@ struct SamplePlayerView: View {
     @State private var waveformSamples: [Float] = []
     @State private var errorMessage: String?
     @State private var showingError = false
+    @State private var isExporting = false
+    @State private var exportedFileURL: URL?
 
     var body: some View {
         TabView {
@@ -27,6 +29,19 @@ struct SamplePlayerView: View {
         }
         .navigationTitle(sample.name)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    performExport()
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .disabled(isExporting)
+            }
+        }
+        .sheet(item: $exportedFileURL) { url in
+            ShareSheet(activityItems: [url])
+        }
         .onAppear {
             loadAudio()
             syncGrainParameters()
@@ -120,10 +135,47 @@ struct SamplePlayerView: View {
         audioEngine.setReverbPreDelay(sample.reverbPreDelay)
     }
 
+    private func performExport() {
+        isExporting = true
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                let url = try audioEngine.exportAudio(sample: sample)
+                DispatchQueue.main.async {
+                    isExporting = false
+                    exportedFileURL = url
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    isExporting = false
+                    errorMessage = "Export failed: \(error.localizedDescription)"
+                    showingError = true
+                }
+            }
+        }
+    }
+
     private func formatTime(_ seconds: Double) -> String {
         let mins = Int(seconds) / 60
         let secs = Int(seconds) % 60
         let ms = Int((seconds.truncatingRemainder(dividingBy: 1)) * 100)
         return String(format: "%d:%02d.%02d", mins, secs, ms)
     }
+}
+
+// MARK: - Share Sheet
+
+private struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+
+// MARK: - Identifiable URL for sheet binding
+
+extension URL: @retroactive Identifiable {
+    public var id: String { absoluteString }
 }

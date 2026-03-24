@@ -20,6 +20,7 @@ final class Sample {
     var grainRelease: Float = 0.25
     var noteAttack: Float = 0.01
     var noteRelease: Float = 0.3
+    var dryWetMix: Float = 1.0
 
     // Graphic EQ properties (8-band: 60, 170, 310, 600, 1K, 3K, 6K, 12K)
     var eqEnabled: Bool = false

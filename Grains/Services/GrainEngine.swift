@@ -24,6 +24,7 @@ final class GrainEngine {
         var endPosition: Int = 0             // frames
         var noteAttack: Float = 0.01         // seconds
         var noteRelease: Float = 0.3         // seconds
+        var dryWetMix: Float = 1.0           // 0 = fully dry, 1 = fully wet (granular)
     }
 
     // MARK: - Public readable state
@@ -48,6 +49,9 @@ final class GrainEngine {
 
     // Playback head (frame position within source, float for sub-frame precision)
     private var playbackHead: Float = 0
+
+    // Dry playback head (linear read through the loop region)
+    private var dryHead: Int = 0
 
     // Grain clock
     private var grainClockCounter: Int = 0
@@ -105,6 +109,7 @@ final class GrainEngine {
         }
         // Reset playback state
         playbackHead = Float(activeParams.startPosition)
+        dryHead = activeParams.startPosition
         grainClockCounter = 0
         grainClockPeriod = max(1, Int(sampleRate / max(activeParams.grainRate, 0.01)))
         nextBirthOrder = 0
@@ -247,8 +252,30 @@ final class GrainEngine {
                 }
             }
 
-            outputL[frame] = sampleL
-            outputR[frame] = sampleR
+            // Dry/wet blend
+            let wet = params.dryWetMix
+            if wet < 1.0 {
+                let dry = 1.0 - wet
+                let dryPos = max(0, min(dryHead, sourceFrameCount - 1))
+                let dryL = sourceL![dryPos] * noteLevel
+                let dryR: Float
+                if let srcR = sourceR, sourceChannelCount > 1 {
+                    dryR = srcR[dryPos] * noteLevel
+                } else {
+                    dryR = dryL
+                }
+                outputL[frame] = sampleL * wet + dryL * dry
+                outputR[frame] = sampleR * wet + dryR * dry
+
+                // Advance dry head linearly through the region
+                dryHead += 1
+                if dryHead >= params.endPosition {
+                    dryHead = params.startPosition
+                }
+            } else {
+                outputL[frame] = sampleL
+                outputR[frame] = sampleR
+            }
         }
 
         // Soft limiter via tanh
@@ -308,8 +335,18 @@ final class GrainEngine {
         var grainStart = Int(playbackHead)
 
         if params.shiftDirection == .random {
-            // Randomize position within region
-            grainStart = params.startPosition + Int.random(in: 0..<max(1, regionLength))
+            // shiftSpeed controls the random window size around the playback head.
+            // At max (10), the window spans the entire region; at 0, grains cluster
+            // tightly on the head.
+            let windowFraction = min(params.shiftSpeed / 10.0, 1.0)
+            let halfWindow = Int(Float(regionLength) * windowFraction * 0.5)
+            if halfWindow > 0 {
+                let offset = Int.random(in: -halfWindow...halfWindow)
+                grainStart = grainStart + offset
+                // Wrap within region
+                let rel = (grainStart - params.startPosition) % regionLength
+                grainStart = params.startPosition + (rel < 0 ? rel + regionLength : rel)
+            }
         }
 
         voices[targetIndex] = GrainVoice(
@@ -325,14 +362,18 @@ final class GrainEngine {
         nextBirthOrder += 1
 
         // Advance playback head
-        let advance = params.shiftSpeed * Float(grainLength)
+        let advance: Float
         switch params.shiftDirection {
         case .forward:
+            advance = params.shiftSpeed * Float(grainLength)
             playbackHead += advance
         case .backward:
+            advance = params.shiftSpeed * Float(grainLength)
             playbackHead -= advance
         case .random:
-            playbackHead += advance // still advances for random, position randomized per grain
+            // Slowly drift the head forward so the random window moves through the region
+            advance = Float(grainLength) * 0.5
+            playbackHead += advance
         }
 
         // Wrap head within region

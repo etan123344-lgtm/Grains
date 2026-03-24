@@ -85,6 +85,16 @@ struct GranularControlsView: View {
                     }
                 }
 
+                DSParamRow(
+                    label: "Dry / Wet",
+                    value: $sample.dryWetMix,
+                    range: 0...1,
+                    format: "%.0f%%",
+                    displayMultiplier: 100
+                ) {
+                    audioEngine.setDryWetMix(sample.dryWetMix)
+                }
+
                 DSDivider()
 
                 DSSectionHeader(title: "Grain Envelope")
