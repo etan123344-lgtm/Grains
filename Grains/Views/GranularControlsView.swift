@@ -45,7 +45,8 @@ struct GranularControlsView: View {
                     label: "Density",
                     value: $sample.grainRate,
                     range: 1...32,
-                    format: "%.1fx"
+                    format: "%.1fx",
+                    hint: "How many grains are triggered per second. Higher values create a denser, fuller texture."
                 ) {
                     audioEngine.setGrainRate(sample.grainRate)
                 }
@@ -54,7 +55,8 @@ struct GranularControlsView: View {
                     label: "Grain Size",
                     value: $sample.grainDuration,
                     range: 0.01...1.0,
-                    format: "%.2f s"
+                    format: "%.2f s",
+                    hint: "Duration of each grain in seconds. Shorter grains sound glitchy, longer grains sound smoother."
                 ) {
                     audioEngine.setGrainDuration(sample.grainDuration)
                 }
@@ -63,18 +65,22 @@ struct GranularControlsView: View {
                     label: "Shift Speed",
                     value: $sample.shiftSpeed,
                     range: 0...10,
-                    format: "%.1fx"
+                    format: "%.1fx",
+                    hint: "How fast the playback position moves through the sample. 0 freezes in place, higher values scan faster."
                 ) {
                     audioEngine.setShiftSpeed(sample.shiftSpeed)
                 }
 
                 // Shift Direction
                 VStack(spacing: 6) {
-                    Text("SHIFT DIRECTION")
-                        .font(DS.monoSmall)
-                        .foregroundStyle(DS.textSecondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, DS.hPad)
+                    HStack {
+                        Text("SHIFT DIRECTION")
+                            .font(DS.monoSmall)
+                            .foregroundStyle(DS.textSecondary)
+                        DSHintButton(text: "Direction the playback position scans through the sample. FWD = forward, BWD = backward, RND = random.")
+                        Spacer()
+                    }
+                    .padding(.horizontal, DS.hPad)
 
                     DSSegmentedPicker(
                         labels: ["FWD", "BWD", "RND"],
@@ -90,7 +96,8 @@ struct GranularControlsView: View {
                     value: $sample.dryWetMix,
                     range: 0...1,
                     format: "%.0f%%",
-                    displayMultiplier: 100
+                    displayMultiplier: 100,
+                    hint: "Mix between the original sample (dry) and the granular output (wet)."
                 ) {
                     audioEngine.setDryWetMix(sample.dryWetMix)
                 }
@@ -104,7 +111,8 @@ struct GranularControlsView: View {
                     value: $sample.grainAttack,
                     range: 0.01...0.5,
                     format: "%.0f%%",
-                    displayMultiplier: 100
+                    displayMultiplier: 100,
+                    hint: "Fade-in portion of each grain. Higher values give a softer onset, reducing clicks."
                 ) {
                     audioEngine.setGrainEnvelope(attack: sample.grainAttack, release: sample.grainRelease)
                 }
@@ -114,7 +122,8 @@ struct GranularControlsView: View {
                     value: $sample.grainRelease,
                     range: 0.01...0.5,
                     format: "%.0f%%",
-                    displayMultiplier: 100
+                    displayMultiplier: 100,
+                    hint: "Fade-out portion of each grain. Higher values give a smoother tail, reducing clicks."
                 ) {
                     audioEngine.setGrainEnvelope(attack: sample.grainAttack, release: sample.grainRelease)
                 }
@@ -127,7 +136,8 @@ struct GranularControlsView: View {
                     label: "Attack",
                     value: $sample.noteAttack,
                     range: 0.001...2.0,
-                    format: "%.3f s"
+                    format: "%.3f s",
+                    hint: "Time for the overall note volume to ramp up from silence to full level."
                 ) {
                     audioEngine.setNoteEnvelope(attack: sample.noteAttack, release: sample.noteRelease)
                 }
@@ -136,7 +146,8 @@ struct GranularControlsView: View {
                     label: "Release",
                     value: $sample.noteRelease,
                     range: 0.01...5.0,
-                    format: "%.2f s"
+                    format: "%.2f s",
+                    hint: "Time for the overall note volume to fade out after playback stops."
                 ) {
                     audioEngine.setNoteEnvelope(attack: sample.noteAttack, release: sample.noteRelease)
                 }
@@ -150,7 +161,8 @@ struct GranularControlsView: View {
                     value: $sample.pitchSemitones,
                     range: -12...12,
                     step: 0.5,
-                    format: "%+.1f st"
+                    format: "%+.1f st",
+                    hint: "Shift sample pitch up or down in semitone steps."
                 ) {
                     audioEngine.setPitch(sample.pitchSemitones)
                 }

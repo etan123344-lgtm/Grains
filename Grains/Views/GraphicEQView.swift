@@ -59,7 +59,7 @@ struct GraphicEQView: View {
         }
         .padding(.top, 16)
         .padding(.bottom, 32)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(DS.bg)
     }
 

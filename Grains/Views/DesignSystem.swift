@@ -35,7 +35,10 @@ struct DSParamRow: View {
     var step: Float? = nil
     var format: String = "%.2f"
     var displayMultiplier: Float = 1
+    var hint: String? = nil
     var onChange: () -> Void = {}
+
+    @State private var showingHint = false
 
     var body: some View {
         VStack(spacing: 6) {
@@ -43,6 +46,9 @@ struct DSParamRow: View {
                 Text(label.uppercased())
                     .font(DS.monoSmall)
                     .foregroundStyle(DS.textSecondary)
+                if let hint {
+                    DSHintButton(text: hint)
+                }
                 Spacer()
                 Text(String(format: format, value * displayMultiplier))
                     .font(DS.monoValue)
@@ -52,6 +58,32 @@ struct DSParamRow: View {
             DSSlider(value: $value, range: range, step: step, onChange: onChange)
         }
         .padding(.horizontal, DS.hPad)
+    }
+}
+
+// MARK: - Hint Button
+
+struct DSHintButton: View {
+    let text: String
+    @State private var showing = false
+
+    var body: some View {
+        Button {
+            showing.toggle()
+        } label: {
+            Image(systemName: "questionmark.circle")
+                .font(.system(size: 12))
+                .foregroundStyle(DS.textSecondary)
+        }
+        .popover(isPresented: $showing, arrowEdge: .top) {
+            Text(text)
+                .font(DS.mono)
+                .foregroundStyle(DS.text)
+                .padding(12)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(width: 260)
+                .presentationCompactAdaptation(.popover)
+        }
     }
 }
 
