@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		181E3D0C2F89D46E006DCDBB /* EchoEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181E3D0B2F89D46E006DCDBB /* EchoEngine.swift */; };
+		181E3D0E2F89D485006DCDBB /* EchoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181E3D0D2F89D485006DCDBB /* EchoView.swift */; };
 		18D4C0DA2F4E4E1E00D08E78 /* GrainsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D4C0D92F4E4E1E00D08E78 /* GrainsApp.swift */; };
 		18D4C0E02F4E4E1F00D08E78 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18D4C0DF2F4E4E1F00D08E78 /* Assets.xcassets */; };
 		18D4C0E32F4E4E1F00D08E78 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18D4C0E22F4E4E1F00D08E78 /* Preview Assets.xcassets */; };
@@ -53,6 +55,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		181E3D0B2F89D46E006DCDBB /* EchoEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EchoEngine.swift; sourceTree = "<group>"; };
+		181E3D0D2F89D485006DCDBB /* EchoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EchoView.swift; sourceTree = "<group>"; };
 		18D4C0D62F4E4E1E00D08E78 /* Grains.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Grains.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18D4C0D92F4E4E1E00D08E78 /* GrainsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrainsApp.swift; sourceTree = "<group>"; };
 		18D4C0DF2F4E4E1F00D08E78 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -186,6 +190,7 @@
 				AA0001052F4F000100D08E78 /* FileManagerService.swift */,
 				DD0001002F60000100D08E78 /* GrainEngine.swift */,
 				FF0001002F80000100D08E78 /* GraphicEQEngine.swift */,
+				181E3D0B2F89D46E006DCDBB /* EchoEngine.swift */,
 				GG0001002F90000100D08E78 /* ReverbEngine.swift */,
 				II0001002FB0000100D08E78 /* EffectProcessorUnit.swift */,
 				AA00010A2F4F000100D08E78 /* WaveformGenerator.swift */,
@@ -200,8 +205,9 @@
 				HH0001002FA0000100D08E78 /* DesignSystem.swift */,
 				DD0001022F60000100D08E78 /* GranularControlsView.swift */,
 				AA0001062F4F000100D08E78 /* HomeView.swift */,
-				EE0001002F70000100D08E78 /* ReverbView.swift */,
 				FF0001022F80000100D08E78 /* GraphicEQView.swift */,
+				181E3D0D2F89D485006DCDBB /* EchoView.swift */,
+				EE0001002F70000100D08E78 /* ReverbView.swift */,
 				AA0001092F4F000100D08E78 /* RecordingSheet.swift */,
 				AA0001072F4F000100D08E78 /* SamplePlayerView.swift */,
 				AA0001082F4F000100D08E78 /* WaveformEditorView.swift */,
@@ -342,10 +348,12 @@
 			files = (
 				18D4C0DA2F4E4E1E00D08E78 /* GrainsApp.swift in Sources */,
 				BB0001012F4F000100D08E78 /* Sample.swift in Sources */,
+				181E3D0E2F89D485006DCDBB /* EchoView.swift in Sources */,
 				BB0001022F4F000100D08E78 /* AudioEngineService.swift in Sources */,
 				BB0001032F4F000100D08E78 /* AudioRecorderService.swift in Sources */,
 				BB0001052F4F000100D08E78 /* FileManagerService.swift in Sources */,
 				BB00010A2F4F000100D08E78 /* WaveformGenerator.swift in Sources */,
+				181E3D0C2F89D46E006DCDBB /* EchoEngine.swift in Sources */,
 				BB0001062F4F000100D08E78 /* HomeView.swift in Sources */,
 				BB0001072F4F000100D08E78 /* SamplePlayerView.swift in Sources */,
 				BB0001082F4F000100D08E78 /* WaveformEditorView.swift in Sources */,

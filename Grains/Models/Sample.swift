@@ -63,6 +63,13 @@ final class Sample {
         [eqGain0, eqGain1, eqGain2, eqGain3, eqGain4, eqGain5, eqGain6, eqGain7]
     }
 
+    // Echo properties
+    var echoEnabled: Bool = false
+    var echoDelayTime: Float = 300
+    var echoFeedback: Float = 0.4
+    var echoWetDry: Float = 0.3
+    var echoTone: Float = 0.5
+
     // Reverb properties
     var reverbEnabled: Bool = false
     var reverbRoomSize: Float = 0.5

@@ -10,6 +10,7 @@ final class AudioEngineService {
     private var effectNode: AVAudioUnit?
     let grainEngine = GrainEngine()
     let graphicEQ = GraphicEQEngine()
+    let echoEngine = EchoEngine()
     let reverbEngine = ReverbEngine()
 
     private var fullBuffer: AVAudioPCMBuffer?
@@ -53,14 +54,16 @@ final class AudioEngineService {
         sourceNode = node
         engine.attach(node)
 
-        // Effect node: EQ + reverb, placed after varispeed so pitch changes
-        // don't disrupt the EQ/reverb filter state
+        // Effect node: EQ -> echo -> reverb, placed after varispeed so pitch changes
+        // don't disrupt the filter/delay state
         let effect = AVAudioUnitEffect(audioComponentDescription: EffectProcessorAU.componentDescription)
         if let au = effect.auAudioUnit as? EffectProcessorAU {
             let eq = graphicEQ
+            let ec = echoEngine
             let rv = reverbEngine
             au.processBlock = { left, right, frameCount in
                 eq.process(inputL: left, inputR: right, frameCount: frameCount)
+                ec.process(inputL: left, inputR: right, frameCount: frameCount)
                 rv.process(inputL: left, inputR: right, frameCount: frameCount)
             }
         }
@@ -104,6 +107,7 @@ final class AudioEngineService {
         }
 
         graphicEQ.configure(sampleRate: Float(format.sampleRate))
+        echoEngine.configure(sampleRate: Float(format.sampleRate))
         reverbEngine.configure(sampleRate: Float(format.sampleRate))
         connectGranularPath(format: format)
 
@@ -211,6 +215,28 @@ final class AudioEngineService {
         graphicEQ.setParameters { $0.gains = gains }
     }
 
+    // MARK: - Echo Parameter Setters
+
+    func setEchoEnabled(_ enabled: Bool) {
+        echoEngine.setParameters { $0.isEnabled = enabled }
+    }
+
+    func setEchoDelayTime(_ ms: Float) {
+        echoEngine.setParameters { $0.delayTime = ms }
+    }
+
+    func setEchoFeedback(_ feedback: Float) {
+        echoEngine.setParameters { $0.feedback = feedback }
+    }
+
+    func setEchoWetDry(_ mix: Float) {
+        echoEngine.setParameters { $0.wetDry = mix }
+    }
+
+    func setEchoTone(_ tone: Float) {
+        echoEngine.setParameters { $0.tone = tone }
+    }
+
     // MARK: - Reverb Parameter Setters
 
     func setReverbEnabled(_ enabled: Bool) {
@@ -287,6 +313,16 @@ final class AudioEngineService {
             p.gains = sample.eqGains
         }
 
+        let offlineEcho = EchoEngine()
+        offlineEcho.configure(sampleRate: Float(sampleRate))
+        offlineEcho.setParameters { p in
+            p.isEnabled = sample.echoEnabled
+            p.delayTime = sample.echoDelayTime
+            p.feedback = sample.echoFeedback
+            p.wetDry = sample.echoWetDry
+            p.tone = sample.echoTone
+        }
+
         let offlineReverb = ReverbEngine()
         offlineReverb.configure(sampleRate: Float(sampleRate))
         offlineReverb.setParameters { p in
@@ -317,9 +353,11 @@ final class AudioEngineService {
         let effectNode = AVAudioUnitEffect(audioComponentDescription: EffectProcessorAU.componentDescription)
         if let au = effectNode.auAudioUnit as? EffectProcessorAU {
             let eq = offlineEQ
+            let ec = offlineEcho
             let rv = offlineReverb
             au.processBlock = { left, right, frameCount in
                 eq.process(inputL: left, inputR: right, frameCount: frameCount)
+                ec.process(inputL: left, inputR: right, frameCount: frameCount)
                 rv.process(inputL: left, inputR: right, frameCount: frameCount)
             }
         }

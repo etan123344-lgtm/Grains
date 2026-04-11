@@ -22,6 +22,11 @@ struct SamplePlayerView: View {
                     Label("EQ", systemImage: "slider.vertical.3")
                 }
 
+            EchoView(sample: sample, audioEngine: audioEngine)
+                .tabItem {
+                    Label("Echo", systemImage: "arrow.triangle.2.circlepath")
+                }
+
             ReverbView(sample: sample, audioEngine: audioEngine)
                 .tabItem {
                     Label("Reverb", systemImage: "waveform.path.ecg")
